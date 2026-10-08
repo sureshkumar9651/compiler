@@ -18,10 +18,27 @@ export default function PlaygroundPage() {
   const { initialize, isLoading } = useProjectStore();
   const [mounted, setMounted] = useState(false);
   const [mobileTab, setMobileTab] = useState<'editor' | 'console'>('editor');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // Suppress Monaco editor cancelation promise rejections from bubbling to Next.js Error Overlay
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      if (event.reason && event.reason.type === 'cancelation') {
+        event.preventDefault();
+      }
+    };
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
   }, []);
 
   useEffect(() => {
@@ -116,55 +133,55 @@ export default function PlaygroundPage() {
             </div>
           )}
 
-          <div className="flex-1 min-w-0 flex flex-col lg:flex-row h-full">
-            {isConsoleOpen ? (
-              <Group orientation="horizontal" className="h-full w-full hidden lg:flex">
-                <Panel defaultSize={60} minSize={30}>
+          <div className="flex-1 min-w-0 flex flex-col h-full">
+            {!isMobile ? (
+              isConsoleOpen ? (
+                <Group orientation="horizontal" className="h-full w-full">
+                  <Panel defaultSize={60} minSize={30}>
+                    <EditorPanel />
+                  </Panel>
+                  <Separator className="w-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-blue-500 transition-colors" />
+                  <Panel defaultSize={40} minSize={20}>
+                    <ConsolePanel />
+                  </Panel>
+                </Group>
+              ) : (
+                <div className="flex-1 h-full">
                   <EditorPanel />
-                </Panel>
-                <Separator className="w-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-blue-500 transition-colors" />
-                <Panel defaultSize={40} minSize={20}>
-                  <ConsolePanel />
-                </Panel>
-              </Group>
+                </div>
+              )
             ) : (
-              <div className="flex-1 h-full hidden lg:flex">
-                <EditorPanel />
+              <div className="flex flex-col h-full w-full overflow-hidden bg-white dark:bg-neutral-950">
+                 <div className="flex h-11 shrink-0 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 overflow-x-auto no-scrollbar">
+                   <button
+                     onClick={() => setMobileTab('editor')}
+                     className={`flex-1 flex items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${mobileTab === 'editor' ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-950' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'}`}
+                   >
+                     <Code2 className="w-4 h-4" />
+                     Editor
+                   </button>
+                   <button
+                     onClick={() => {
+                       setMobileTab('console');
+                       usePlaygroundStore.getState().setConsoleOpen(true);
+                     }}
+                     className={`flex-1 flex items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${mobileTab === 'console' ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-950' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'}`}
+                   >
+                     <Terminal className="w-4 h-4" />
+                     Output / Problems
+                   </button>
+                 </div>
+  
+                 <div className="flex-1 overflow-hidden relative">
+                   <div className={`absolute inset-0 flex flex-col overflow-hidden ${mobileTab === 'editor' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
+                     <EditorPanel />
+                   </div>
+                   <div className={`absolute inset-0 flex flex-col overflow-hidden ${mobileTab === 'console' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
+                     <ConsolePanel />
+                   </div>
+                 </div>
               </div>
             )}
-
-            {/* Mobile/Tablet Fallback Layout */}
-            <div className="flex flex-col h-full w-full lg:hidden overflow-hidden bg-white dark:bg-neutral-950">
-               {/* Mobile Tab Strip */}
-               <div className="flex h-11 shrink-0 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 overflow-x-auto no-scrollbar">
-                 <button
-                   onClick={() => setMobileTab('editor')}
-                   className={`flex-1 flex items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${mobileTab === 'editor' ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-950' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'}`}
-                 >
-                   <Code2 className="w-4 h-4" />
-                   Editor
-                 </button>
-                 <button
-                   onClick={() => {
-                     setMobileTab('console');
-                     usePlaygroundStore.getState().setConsoleOpen(true);
-                   }}
-                   className={`flex-1 flex items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${mobileTab === 'console' ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-950' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'}`}
-                 >
-                   <Terminal className="w-4 h-4" />
-                   Output / Problems
-                 </button>
-               </div>
-
-               <div className="flex-1 overflow-hidden relative">
-                 <div className={`absolute inset-0 flex flex-col overflow-hidden ${mobileTab === 'editor' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
-                   <EditorPanel />
-                 </div>
-                 <div className={`absolute inset-0 flex flex-col overflow-hidden ${mobileTab === 'console' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
-                   <ConsolePanel />
-                 </div>
-               </div>
-            </div>
           </div>
         </div>
       </ErrorBoundary>
