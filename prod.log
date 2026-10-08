@@ -1,0 +1,9 @@
+
+> compiler@0.1.0 start
+> next start
+
+▲ Next.js 16.4.0
+- Local:         http://localhost:3001
+- Network:       http://192.168.2.64:3001
+✓ Ready in 88ms
+✓ Running next.config.ts took 19ms
