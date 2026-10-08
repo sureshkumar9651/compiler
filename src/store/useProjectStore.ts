@@ -61,11 +61,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         targetId = projects[0].id;
       }
 
-      set({ projects, isLoading: false });
-      
       if (targetId) {
         await get().selectProject(targetId);
       }
+
+      set({ projects, isLoading: false });
     } catch (e) {
       console.error('Failed to initialize projects', e);
       set({ isLoading: false });
