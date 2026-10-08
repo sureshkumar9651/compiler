@@ -13,9 +13,36 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app';
+
 export const metadata: Metadata = {
-  title: "JS CodeLab",
-  description: "A professional online JavaScript compiler and playground.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Free Online JavaScript Compiler & Playground | JS CodeLab",
+    template: "%s | JS CodeLab"
+  },
+  description: "Write, run, test, and learn JavaScript online with JS CodeLab — a free browser-based JavaScript compiler and playground with examples and developer-friendly tools.",
+  applicationName: "JS CodeLab",
+  keywords: ["JavaScript compiler", "JavaScript playground", "JavaScript editor", "run JavaScript online", "learn JavaScript"],
+  authors: [{ name: "JS CodeLab" }],
+  creator: "JS CodeLab",
+  publisher: "JS CodeLab",
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Free Online JavaScript Compiler & Playground | JS CodeLab",
+    description: "Write, run, test, and learn JavaScript online with JS CodeLab — a free browser-based JavaScript compiler and playground.",
+    url: SITE_URL,
+    siteName: "JS CodeLab",
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Free Online JavaScript Compiler & Playground | JS CodeLab",
+    description: "Write, run, test, and learn JavaScript online with JS CodeLab.",
+  },
 };
 
 export default function RootLayout({

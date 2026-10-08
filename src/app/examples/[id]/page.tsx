@@ -26,8 +26,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   return {
-    title: `${example.title} JavaScript Example | JS CodeLab`,
-    description: example.description,
+    title: `${example.title} JavaScript Example — Run Online | JS CodeLab`,
+    description: `Learn how to use ${example.title} in JavaScript. View the code, read the explanation, and run this example instantly in our free online compiler.`,
+    alternates: {
+      canonical: `/examples/${example.id}`,
+    },
+    openGraph: {
+      title: `${example.title} JavaScript Example | JS CodeLab`,
+      description: `Run and edit the ${example.title} JavaScript example directly in your browser.`,
+      url: `/examples/${example.id}`,
+    }
   };
 }
 
@@ -39,8 +47,37 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app'
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "JavaScript Examples",
+        "item": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app'}/examples`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": example.title,
+        "item": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app'}/examples/${example.id}`
+      }
+    ]
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2">
           <TerminalSquare className="h-6 w-6 text-blue-500" />
@@ -49,16 +86,34 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
         <nav className="flex items-center gap-6 text-sm font-medium text-neutral-500 dark:text-neutral-400">
           <Link href="/playground" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Playground</Link>
           <Link href="/examples" className="text-neutral-900 dark:text-neutral-50 transition-colors">Examples</Link>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
+          <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Learn</Link>
+          <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
         </nav>
       </header>
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <ExampleDetail example={example} />
+        
+        {/* Additional SEO content explaining the example */}
+        <section className="mt-16 max-w-4xl mx-auto prose dark:prose-invert">
+          <h2 className="text-2xl font-bold mb-4">Understanding the {example.title} Example</h2>
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+            This interactive JavaScript example demonstrates {example.description.toLowerCase()}. You can review the code snippet above, or click the <strong>"Open in Playground"</strong> button to run it instantly in your browser. 
+          </p>
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+            The JS CodeLab compiler allows you to test this code safely without installing Node.js or any local development environment. Feel free to modify the variables, functions, and logic to see how the output changes in real-time.
+          </p>
+          <h3 className="text-xl font-bold mb-3">Next Steps</h3>
+          <ul className="list-disc pl-5 text-neutral-600 dark:text-neutral-400">
+            <li>Run the code to see the actual console output.</li>
+            <li>Modify the implementation to test edge cases.</li>
+            <li>Share your modified code with others using our share feature.</li>
+          </ul>
+        </section>
       </main>
       
       <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
-        © 2026 JS CodeLab. Built for modern developers.
+        © 2026 JS CodeLab. Free Online JavaScript Compiler & Playground.
       </footer>
     </div>
   );
