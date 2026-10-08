@@ -74,7 +74,7 @@ export function EditorPanel() {
         module: monaco.typescript.ModuleKind.CommonJS,
         noEmit: true,
         typeRoots: ['node_modules/@types'],
-        lib: ['esnext'], // Excludes DOM to reflect Web Worker environment
+        lib: ['esnext', 'dom'], // Included 'dom' to resolve console and web APIs
         allowJs: true,
         checkJs: true, // Type checking enabled but we will control diagnostics via setDiagnosticsOptions
       });
