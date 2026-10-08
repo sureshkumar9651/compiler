@@ -45,13 +45,13 @@ export function StatusBar() {
   const { tabSize, insertSpaces } = useEditorStore();
 
   return (
-    <footer className="flex h-8 shrink-0 items-center justify-between border-t border-neutral-200 bg-neutral-100 px-4 text-xs font-medium text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-      <div className="flex items-center gap-4">
+    <footer className="flex h-8 shrink-0 items-center justify-between border-t border-neutral-200 bg-neutral-100 px-2 sm:px-4 text-xs font-medium text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <div className="flex items-center gap-1.5">
           <StatusIcon status={status} />
           <span><StatusText status={status} /></span>
         </div>
-        <div className="h-3 w-px bg-neutral-300 dark:bg-neutral-700" />
+        <div className="h-3 w-px bg-neutral-300 dark:bg-neutral-700 hidden sm:block" />
         {executionTime > 0 && (
           <div className="flex items-center gap-1 text-neutral-500 dark:text-neutral-400">
             <Clock className="h-3 w-3" />
@@ -60,7 +60,7 @@ export function StatusBar() {
         )}
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <span className="hidden sm:inline-block">
           Ln {cursorLine}, Col {cursorColumn}
           {selectionLength > 0 && ` (${selectionLength} selected)`}

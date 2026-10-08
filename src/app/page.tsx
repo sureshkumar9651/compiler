@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { TerminalSquare, ArrowRight, Zap, Code2, LayoutTemplate, BookOpen } from 'lucide-react';
+import { ArrowRight, Zap, Code2, BookOpen } from 'lucide-react';
+import { HomeHeader } from '@/components/layout/HomeHeader';
 
 export default function LandingPage() {
   const structuredData = {
@@ -22,18 +23,7 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-        <div className="flex items-center gap-2">
-          <TerminalSquare className="h-6 w-6 text-blue-500" />
-          <span className="font-bold text-xl tracking-tight">JS CodeLab</span>
-        </div>
-        <nav className="flex items-center gap-6 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          <Link href="/playground" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Playground</Link>
-          <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Examples</Link>
-          <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Learn</Link>
-          <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
-        </nav>
-      </header>
+      <HomeHeader />
 
       <main className="flex-1 flex flex-col items-center px-4 py-16 md:py-24 bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-neutral-900">
         {/* Hero Section */}
@@ -91,7 +81,7 @@ export default function LandingPage() {
           <div className="space-y-4">
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">What is an online JavaScript compiler?</h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed">
-              An online JavaScript compiler is a web-based tool that allows you to write, edit, and execute JavaScript code directly in your internet browser. Unlike traditional local development environments, JS CodeLab doesn't require you to install Node.js, configure build tools, or set up a local server. You can simply open the website and start coding immediately.
+              An online JavaScript compiler is a web-based tool that allows you to write, edit, and execute JavaScript code directly in your internet browser. Unlike traditional local development environments, JS CodeLab doesn&apos;t require you to install Node.js, configure build tools, or set up a local server. You can simply open the website and start coding immediately.
             </p>
           </div>
 
@@ -103,7 +93,7 @@ export default function LandingPage() {
             <ol className="list-decimal pl-6 space-y-2 text-neutral-600 dark:text-neutral-400 text-lg">
               <li>Open the <Link href="/playground" className="text-blue-500 hover:underline">Playground</Link>.</li>
               <li>Type your JavaScript code into the editor.</li>
-              <li>Click the "Run" button or press <kbd className="bg-neutral-200 dark:bg-neutral-800 px-2 py-1 rounded text-sm">Ctrl + Enter</kbd>.</li>
+              <li>Click the &quot;Run&quot; button or press <kbd className="bg-neutral-200 dark:bg-neutral-800 px-2 py-1 rounded text-sm">Ctrl + Enter</kbd>.</li>
               <li>View your output immediately in the integrated console.</li>
             </ol>
           </div>
@@ -112,7 +102,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Why use JS CodeLab?</h2>
             <ul className="list-disc pl-6 space-y-3 text-neutral-600 dark:text-neutral-400 text-lg">
               <li><strong className="text-neutral-900 dark:text-white">It is completely free:</strong> No subscriptions, no hidden fees.</li>
-              <li><strong className="text-neutral-900 dark:text-white">Local-first privacy:</strong> Your projects are saved securely in your browser's IndexedDB. We don't store your code on our servers.</li>
+              <li><strong className="text-neutral-900 dark:text-white">Local-first privacy:</strong> Your projects are saved securely in your browser&apos;s IndexedDB. We don&apos;t store your code on our servers.</li>
               <li><strong className="text-neutral-900 dark:text-white">Instant sharing:</strong> Share your code snippets effortlessly by generating a unique URL containing your exact code state.</li>
               <li><strong className="text-neutral-900 dark:text-white">Professional tooling:</strong> Built with the same editor technology that powers Visual Studio Code.</li>
             </ul>

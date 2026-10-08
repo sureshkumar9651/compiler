@@ -114,15 +114,15 @@ export function ShareDialog({ isOpen, onClose }: ShareDialogProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm transition-opacity">
       <div 
         ref={dialogRef}
         role="dialog" 
         aria-modal="true"
         aria-labelledby="share-dialog-title"
-        className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
+        className="w-[calc(100vw-24px)] max-w-md max-h-[calc(100vh-24px)] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 flex flex-col overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
           <h2 id="share-dialog-title" className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
             <Share2 className="h-5 w-5 text-blue-500" />
             Share JavaScript
@@ -136,7 +136,7 @@ export function ShareDialog({ isOpen, onClose }: ShareDialogProps) {
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6 overflow-y-auto">
           {state === 'generating' && (
             <div className="flex flex-col items-center justify-center py-6 text-neutral-500 dark:text-neutral-400">
               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>

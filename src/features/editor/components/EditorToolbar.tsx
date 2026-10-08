@@ -37,19 +37,19 @@ export function EditorToolbar({ onOpenCommandPalette }: EditorToolbarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-2 sm:px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2 shrink-0">
           <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
             JavaScript
           </span>
           {formatError && (
-            <span className="text-xs text-amber-600 dark:text-amber-500 ml-2 animate-in fade-in">
+            <span className="text-xs text-amber-600 dark:text-amber-500 ml-2 animate-in fade-in truncate max-w-[150px] sm:max-w-none">
               {formatError}
             </span>
           )}
         </div>
         
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={handleFormat}
             disabled={isFormatting}

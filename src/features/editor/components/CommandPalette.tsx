@@ -167,15 +167,15 @@ export function CommandPalette({ isOpen, onClose, onOpenSettings, onOpenShare }:
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-[15vh] px-3 sm:px-4 bg-black/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-xl bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200"
+        className="w-[calc(100vw-24px)] max-w-xl max-h-[calc(100vh-8rem)] sm:max-h-[70vh] flex flex-col bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
-          <Search className="w-5 h-5 text-neutral-400 mr-3" />
+        <div className="flex items-center px-4 py-3 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
+          <Search className="w-5 h-5 text-neutral-400 mr-3 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -190,7 +190,7 @@ export function CommandPalette({ isOpen, onClose, onOpenSettings, onOpenShare }:
           />
         </div>
         
-        <div className="max-h-80 overflow-y-auto p-2">
+        <div className="flex-1 overflow-y-auto p-2 min-h-[50px]">
           {filteredCommands.length === 0 ? (
             <div className="py-6 text-center text-sm text-neutral-500">
               No commands found.

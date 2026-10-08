@@ -54,7 +54,7 @@ export function ProjectSidebar() {
   };
 
   return (
-    <div className="w-64 shrink-0 border-r border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 flex flex-col h-full overflow-hidden">
+    <div className="w-full md:w-64 shrink-0 border-r border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 flex flex-col h-full overflow-hidden">
       <div className="p-3 border-b border-neutral-200 dark:border-neutral-800 space-y-3 shrink-0">
         <button
           onClick={() => createProject()}

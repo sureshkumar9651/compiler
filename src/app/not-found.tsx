@@ -25,7 +25,7 @@ export default function NotFound() {
           Page Not Found
         </h2>
         <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-md mx-auto mb-10">
-          We couldn't find the page you were looking for. It might have been moved or deleted.
+          We couldn&apos;t find the page you were looking for. It might have been moved or deleted.
         </p>
         
         <div className="flex items-center gap-4 flex-wrap justify-center">

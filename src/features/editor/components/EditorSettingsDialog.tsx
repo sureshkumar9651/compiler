@@ -8,7 +8,7 @@ interface EditorSettingsDialogProps {
 
 export function EditorSettingsDialog({ isOpen, onClose }: EditorSettingsDialogProps) {
   const { 
-    fontSize, wordWrap, minimap, lineNumbers, tabSize, insertSpaces, formatOnSave,
+    fontSize, wordWrap, minimap, lineNumbers, tabSize, formatOnSave,
     suggestOn, syntaxDiagnosticsOn, semanticDiagnosticsOn,
     updatePreferences, resetPreferences 
   } = useEditorStore();
@@ -16,14 +16,14 @@ export function EditorSettingsDialog({ isOpen, onClose }: EditorSettingsDialogPr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm transition-opacity">
       <div 
         role="dialog" 
         aria-modal="true"
         aria-labelledby="settings-dialog-title"
-        className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
+        className="w-[calc(100vw-24px)] max-w-md max-h-[calc(100vh-24px)] flex flex-col bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
           <h2 id="settings-dialog-title" className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
             Editor Settings
           </h2>
@@ -36,7 +36,7 @@ export function EditorSettingsDialog({ isOpen, onClose }: EditorSettingsDialogPr
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Font Size</span>
             <div className="flex items-center gap-2">

@@ -83,7 +83,7 @@ function ConsoleEntryRow({ entry }: { entry: ConsoleEntry }) {
 
 export function ConsolePanel() {
   const { consoleEntries, isConsoleOpen, consoleFilter } = usePlaygroundStore();
-  const { markers, setCursorPosition } = useEditorStateStore();
+  const { markers } = useEditorStateStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'console' | 'problems'>('console');
 

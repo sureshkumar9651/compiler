@@ -37,22 +37,22 @@ export function ConsoleHeader() {
   ];
 
   return (
-    <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-200 bg-neutral-100 px-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
-          <Terminal className="h-4 w-4" />
+    <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-200 bg-neutral-100 px-2 sm:px-4 dark:border-neutral-800 dark:bg-neutral-900 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-neutral-600 dark:text-neutral-300">
+          <Terminal className="h-4 w-4 shrink-0" />
           <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline-block">Console</span>
           <span className="text-xs font-medium text-neutral-500 bg-neutral-200 dark:bg-neutral-800 px-1.5 py-0.5 rounded">
             {consoleEntries.length}
           </span>
         </div>
         
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           {filters.map(filter => (
             <button
               key={filter.value}
               onClick={() => setConsoleFilter(filter.value)}
-              className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+              className={`px-1.5 sm:px-2 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
                 consoleFilter === filter.value
                   ? 'bg-white text-neutral-900 shadow-sm dark:bg-neutral-800 dark:text-white'
                   : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-800/50'

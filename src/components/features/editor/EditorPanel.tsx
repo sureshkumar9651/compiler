@@ -30,7 +30,7 @@ export function EditorPanel() {
   const editorRef = useRef<any>(null);
   
   const { 
-    fontSize, wordWrap, minimap, lineNumbers, tabSize, insertSpaces, formatOnSave,
+    fontSize, wordWrap, minimap, lineNumbers, tabSize, insertSpaces,
     suggestOn, syntaxDiagnosticsOn, semanticDiagnosticsOn
   } = useEditorStore();
   const { setCursorPosition, setMarkers } = useEditorStateStore();
