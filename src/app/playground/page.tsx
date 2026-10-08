@@ -18,26 +18,48 @@ export default function PlaygroundPage() {
   const { initialize, isLoading } = useProjectStore();
   const [mounted, setMounted] = useState(false);
   const [mobileTab, setMobileTab] = useState<'editor' | 'console'>('editor');
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const mobile = window.innerWidth < 1024;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMobile(mobile);
+    
+    if (mobile) {
+      usePlaygroundStore.setState({ isSidebarOpen: false });
+    }
+    
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
 
     // Suppress Monaco editor cancelation promise rejections from bubbling to Next.js Error Overlay
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      if (event.reason && event.reason.type === 'cancelation') {
+      if (event.reason && (event.reason.type === 'cancelation' || event.reason.name === 'Canceled' || event.reason.message === 'Canceled')) {
         event.preventDefault();
       }
     };
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
+    // Suppress Monaco editor Canceled errors from flooding the console
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      const isCanceled = args.some(arg => {
+        if (typeof arg === 'string' && (arg.includes('Canceled') || arg.includes('cancelation'))) return true;
+        if (arg instanceof Error && (arg.message === 'Canceled' || arg.name === 'Canceled')) return true;
+        if (arg && typeof arg === 'object' && (arg.type === 'cancelation' || arg.message === 'Canceled')) return true;
+        return false;
+      });
+      if (isCanceled) return;
+      originalConsoleError.apply(console, args);
+    };
+
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', handleResize);
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      console.error = originalConsoleError;
     };
   }, []);
 
@@ -98,7 +120,7 @@ export default function PlaygroundPage() {
     };
   }, [initialize]);
 
-  if (!mounted || isLoading) {
+  if (!mounted || isLoading || isMobile === null) {
     return (
       <div className="flex h-screen w-full flex-col bg-white dark:bg-neutral-950 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
