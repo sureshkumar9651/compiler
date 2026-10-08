@@ -19,6 +19,7 @@ import { formatJavaScript } from '@/features/editor/services/formatter';
 
 
 
+
 export function EditorPanel() {
   const { code, setCode, lastError } = usePlaygroundStore();
   const { updateCode, manualSave } = useProjectStore();
@@ -66,11 +67,11 @@ export function EditorPanel() {
       });
 
       // Configure JavaScript Language Service
-      monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-        target: monaco.languages.typescript.ScriptTarget.ESNext,
+      monaco.typescript.javascriptDefaults.setCompilerOptions({
+        target: monaco.typescript.ScriptTarget.ESNext,
         allowNonTsExtensions: true,
-        moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-        module: monaco.languages.typescript.ModuleKind.CommonJS,
+        moduleResolution: monaco.typescript.ModuleResolutionKind.NodeJs,
+        module: monaco.typescript.ModuleKind.CommonJS,
         noEmit: true,
         typeRoots: ['node_modules/@types'],
         lib: ['esnext'], // Excludes DOM to reflect Web Worker environment
@@ -82,7 +83,7 @@ export function EditorPanel() {
 
   useEffect(() => {
     if (monaco) {
-      monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      monaco.typescript.javascriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: !semanticDiagnosticsOn,
         noSyntaxValidation: !syntaxDiagnosticsOn,
         noSuggestionDiagnostics: !suggestOn,
