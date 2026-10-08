@@ -22,7 +22,7 @@ import { formatJavaScript } from '@/features/editor/services/formatter';
 
 export function EditorPanel() {
   const { code, setCode, lastError } = usePlaygroundStore();
-  const { updateCode, manualSave } = useProjectStore();
+  const { updateCode, manualSave, activeProjectId } = useProjectStore();
   const { executeCode } = useExecution();
   const monaco = useMonaco();
   const { resolvedTheme } = useTheme();
@@ -39,47 +39,45 @@ export function EditorPanel() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
 
-  useEffect(() => {
-    if (monaco) {
-      // Define custom themes
-      monaco.editor.defineTheme('custom-dark', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [],
-        colors: {
-          'editor.background': '#0a0a0a',
-          'editor.lineHighlightBackground': '#171717',
-          'editorLineNumber.foreground': '#525252',
-          'editorLineNumber.activeForeground': '#a3a3a3',
-        },
-      });
+  const handleEditorWillMount = (monaco: Monaco) => {
+    // Define custom themes
+    monaco.editor.defineTheme('custom-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#0a0a0a',
+        'editor.lineHighlightBackground': '#171717',
+        'editorLineNumber.foreground': '#525252',
+        'editorLineNumber.activeForeground': '#a3a3a3',
+      },
+    });
 
-      monaco.editor.defineTheme('custom-light', {
-        base: 'vs',
-        inherit: true,
-        rules: [],
-        colors: {
-          'editor.background': '#ffffff',
-          'editor.lineHighlightBackground': '#f5f5f5',
-          'editorLineNumber.foreground': '#a3a3a3',
-          'editorLineNumber.activeForeground': '#525252',
-        },
-      });
+    monaco.editor.defineTheme('custom-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#ffffff',
+        'editor.lineHighlightBackground': '#f5f5f5',
+        'editorLineNumber.foreground': '#a3a3a3',
+        'editorLineNumber.activeForeground': '#525252',
+      },
+    });
 
-      // Configure JavaScript Language Service
-      monaco.typescript.javascriptDefaults.setCompilerOptions({
-        target: monaco.typescript.ScriptTarget.ESNext,
-        allowNonTsExtensions: true,
-        moduleResolution: monaco.typescript.ModuleResolutionKind.NodeJs,
-        module: monaco.typescript.ModuleKind.CommonJS,
-        noEmit: true,
-        typeRoots: ['node_modules/@types'],
-        lib: ['esnext', 'dom'], // Included 'dom' to resolve console and web APIs
-        allowJs: true,
-        checkJs: true, // Type checking enabled but we will control diagnostics via setDiagnosticsOptions
-      });
-    }
-  }, [monaco]);
+    // Configure JavaScript Language Service
+    monaco.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.typescript.ScriptTarget.ESNext,
+      allowNonTsExtensions: true,
+      moduleResolution: monaco.typescript.ModuleResolutionKind.NodeJs,
+      module: monaco.typescript.ModuleKind.CommonJS,
+      noEmit: true,
+      typeRoots: ['node_modules/@types'],
+      lib: ['esnext', 'dom'], // Included 'dom' to resolve console and web APIs
+      allowJs: true,
+      checkJs: true, // Type checking enabled but we will control diagnostics via setDiagnosticsOptions
+    });
+  };
 
   useEffect(() => {
     if (monaco) {
@@ -91,11 +89,7 @@ export function EditorPanel() {
     }
   }, [monaco, suggestOn, syntaxDiagnosticsOn, semanticDiagnosticsOn]);
 
-  useEffect(() => {
-    if (monaco) {
-      monaco.editor.setTheme(resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light');
-    }
-  }, [resolvedTheme, monaco]);
+
 
   // Handle setting markers for errors
   useEffect(() => {
@@ -203,10 +197,14 @@ export function EditorPanel() {
       
       <div className="flex-1 min-h-0 relative">
         <Editor
+          key={activeProjectId || 'default'}
+          path={`project-${activeProjectId || 'default'}.js`}
           height="100%"
           defaultLanguage="javascript"
+          theme={resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light'}
           value={code}
           onChange={handleEditorChange}
+          beforeMount={handleEditorWillMount}
           onMount={handleEditorMount}
           options={{
             minimap: { enabled: minimap, scale: 0.75 },
