@@ -197,8 +197,6 @@ export function EditorPanel() {
       
       <div className="flex-1 min-h-0 relative">
         <Editor
-          key={activeProjectId || 'default'}
-          path={`project-${activeProjectId || 'default'}.js`}
           height="100%"
           defaultLanguage="javascript"
           theme={resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light'}
