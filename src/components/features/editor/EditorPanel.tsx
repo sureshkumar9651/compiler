@@ -216,7 +216,7 @@ export function EditorPanel() {
             padding: { top: 16, bottom: 16 },
             scrollBeyondLastLine: false,
             smoothScrolling: true,
-            // cursorBlinking: 'smooth',
+            cursorBlinking: 'smooth',
             cursorSmoothCaretAnimation: 'on',
             formatOnPaste: true,
             wordWrap: wordWrap ? 'on' : 'off',
