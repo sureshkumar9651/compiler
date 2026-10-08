@@ -191,52 +191,61 @@ export function EditorPanel() {
     });
   };
 
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="flex-1 w-full h-full relative border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col overflow-hidden">
       <EditorToolbar onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} />
       
       <div className="flex-1 min-h-0 relative">
-        <Editor
-          height="100%"
-          defaultLanguage="javascript"
-          theme={resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light'}
-          value={code}
-          onChange={handleEditorChange}
-          beforeMount={handleEditorWillMount}
-          onMount={handleEditorMount}
-          options={{
-            minimap: { enabled: minimap, scale: 0.75 },
-            fontSize: fontSize,
-            fontFamily: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-            lineHeight: Math.max(20, Math.floor(fontSize * 1.6)),
-            padding: { top: 16, bottom: 16 },
-            scrollBeyondLastLine: false,
-            smoothScrolling: true,
-            cursorBlinking: 'smooth',
-            cursorSmoothCaretAnimation: 'on',
-            formatOnPaste: true,
-            wordWrap: wordWrap ? 'on' : 'off',
-            lineNumbers: lineNumbers ? 'on' : 'off',
-            bracketPairColorization: { enabled: true },
-            autoClosingBrackets: 'always',
-            folding: true,
-            automaticLayout: true,
-            renderLineHighlight: 'all',
-            hideCursorInOverviewRuler: true,
-            tabSize,
-            insertSpaces,
-            scrollbar: {
-              verticalScrollbarSize: 10,
-              horizontalScrollbarSize: 10,
-            },
-          }}
-          loading={
-            <div className="flex h-full items-center justify-center text-neutral-500 gap-2 flex-col">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-              <span className="text-sm font-medium">Initializing Editor...</span>
-            </div>
-          }
-        />
+        {isReady && (
+          <Editor
+            height="100%"
+            defaultLanguage="javascript"
+            theme={resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light'}
+            value={code}
+            onChange={handleEditorChange}
+            beforeMount={handleEditorWillMount}
+            onMount={handleEditorMount}
+            options={{
+              minimap: { enabled: minimap, scale: 0.75 },
+              fontSize: fontSize,
+              fontFamily: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+              lineHeight: Math.max(20, Math.floor(fontSize * 1.6)),
+              padding: { top: 16, bottom: 16 },
+              scrollBeyondLastLine: false,
+              smoothScrolling: true,
+              cursorBlinking: 'smooth',
+              cursorSmoothCaretAnimation: 'on',
+              formatOnPaste: true,
+              wordWrap: wordWrap ? 'on' : 'off',
+              lineNumbers: lineNumbers ? 'on' : 'off',
+              bracketPairColorization: { enabled: true },
+              autoClosingBrackets: 'always',
+              folding: true,
+              automaticLayout: true,
+              renderLineHighlight: 'all',
+              hideCursorInOverviewRuler: true,
+              tabSize,
+              insertSpaces,
+              scrollbar: {
+                verticalScrollbarSize: 10,
+                horizontalScrollbarSize: 10,
+              },
+            }}
+            loading={
+              <div className="flex h-full items-center justify-center text-neutral-500 gap-2 flex-col">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <span className="text-sm font-medium">Initializing Editor...</span>
+              </div>
+            }
+          />
+        )}
       </div>
       
       <CommandPalette 

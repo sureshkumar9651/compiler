@@ -40,12 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="text-neutral-600 dark:text-neutral-400 mb-4 max-w-md">
             An unexpected error occurred in this section of the application. The error has been logged.
           </p>
-          {this.state.error && (
-            <div className="w-full max-w-2xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-4 rounded-md text-left text-xs font-mono overflow-auto mb-8 border border-red-100 dark:border-red-900/30">
-              <p className="font-bold mb-1">{this.state.error.name}: {this.state.error.message}</p>
-              <pre className="whitespace-pre-wrap">{this.state.error.stack}</pre>
-            </div>
-          )}
+
           <button
             onClick={() => {
               this.setState({ hasError: false, error: null });
