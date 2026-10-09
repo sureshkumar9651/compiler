@@ -76,11 +76,24 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
     ]
   };
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": topic.title,
+    "description": topic.description,
+    "articleBody": topic.content,
+    "datePublished": "2026-10-09T00:00:00Z",
+    "author": {
+      "@type": "Organization",
+      "name": "JS CodeLab"
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([structuredData, articleSchema]) }}
       />
       <header className="flex flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2">
@@ -114,6 +127,13 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
             {topic.description}
           </p>
 
+          {topic.codeSnippet && (
+            <div className="bg-neutral-900 text-neutral-100 p-6 rounded-2xl shadow-sm mb-10 overflow-x-auto font-mono text-sm border border-neutral-800">
+              <div className="text-xs text-neutral-400 mb-2 uppercase font-semibold tracking-wider">Example</div>
+              <pre><code>{topic.codeSnippet}</code></pre>
+            </div>
+          )}
+
           <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
             <ReactMarkdown
               components={{
@@ -145,6 +165,20 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
             </ReactMarkdown>
           </div>
         </article>
+
+        {topic.faq && topic.faq.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold text-neutral-900 dark:text-white mb-8">Frequently Asked Questions</h2>
+            <div className="space-y-6">
+              {topic.faq.map((q, i) => (
+                <div key={i} className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                  <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">{q.question}</h3>
+                  <p className="text-neutral-600 dark:text-neutral-400">{q.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="mt-16 p-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl text-center">
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-4">Ready to practice?</h2>
