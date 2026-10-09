@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TerminalSquare, ArrowRight } from 'lucide-react';
 import { Metadata } from 'next';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Page Not Found',
@@ -41,9 +42,7 @@ export default function NotFound() {
         </div>
       </main>
       
-      <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800">
-        © 2026 JS CodeLab. Free Online JavaScript Compiler & Playground.
-      </footer>
+      <Footer />
     </div>
   );
 }

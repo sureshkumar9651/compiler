@@ -5,6 +5,7 @@ import { ExampleDetail } from '@/features/examples/components/example-detail';
 import { TerminalSquare } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 
 export async function generateStaticParams() {
   const examples = exampleService.getAllExamples();
@@ -111,9 +112,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
         
       </main>
       
-      <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
-        © 2026 JS CodeLab. Free Online JavaScript Compiler & Playground.
-      </footer>
+      <Footer />
     </div>
   );
 }

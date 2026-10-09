@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { learnTopics, getLearnTopicById } from '@/features/learn/data';
 import ReactMarkdown from 'react-markdown';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 
 export async function generateStaticParams() {
   return learnTopics.map((topic) => ({
@@ -185,9 +186,7 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
         </div>
       </main>
       
-      <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
-        © 2026 JS CodeLab. Free Online JavaScript Compiler & Playground.
-      </footer>
+      <Footer />
     </div>
   );
 }

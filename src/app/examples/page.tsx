@@ -3,6 +3,7 @@ import { TerminalSquare } from 'lucide-react';
 import Link from 'next/link';
 import { ExamplesClient } from '@/features/examples/components/examples-client';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'JavaScript Examples',
@@ -66,9 +67,7 @@ export default function ExamplesPage() {
         <ExamplesClient />
       </main>
       
-      <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800">
-        © 2026 JS CodeLab. Built for modern developers.
-      </footer>
+      <Footer />
     </div>
   );
 }

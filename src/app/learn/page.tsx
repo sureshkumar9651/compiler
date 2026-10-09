@@ -3,6 +3,7 @@ import { TerminalSquare, BookOpen, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { learnTopics } from '@/features/learn/data';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Learn JavaScript',
@@ -85,9 +86,7 @@ export default function LearnIndexPage() {
         </div>
       </main>
       
-      <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
-        © 2026 JS CodeLab. Built for modern developers.
-      </footer>
+      <Footer />
     </div>
   );
 }
