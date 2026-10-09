@@ -59,7 +59,7 @@ export default function LandingPage() {
             Free Online JavaScript Compiler
           </h1>
           <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-            JS CodeLab is a free online JavaScript compiler and playground for writing, running, testing, and learning JavaScript directly in your browser. No installation or account required.
+            JS CodeLab is a free online JavaScript runner and playground for writing, running, testing, and learning JavaScript directly in your browser. Use this lightweight JS sandbox without any installation or account.
           </p>
           <div className="flex items-center justify-center pt-4 gap-4 flex-wrap">
             <Link 
@@ -82,14 +82,14 @@ export default function LandingPage() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full text-left mb-24">
           <div className="p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950/50 shadow-sm">
             <Zap className="h-10 w-10 text-yellow-500 mb-6" />
-            <h2 className="text-2xl font-bold mb-3 text-neutral-900 dark:text-white">Run JavaScript Online</h2>
+            <h2 className="text-2xl font-bold mb-3 text-neutral-900 dark:text-white">Test JavaScript Online</h2>
             <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Execute modern JavaScript code instantly. Our secure in-browser execution engine evaluates your code securely without requiring server round-trips, giving you immediate feedback.
             </p>
           </div>
           <div className="p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950/50 shadow-sm">
             <Code2 className="h-10 w-10 text-blue-500 mb-6" />
-            <h2 className="text-2xl font-bold mb-3 text-neutral-900 dark:text-white">JavaScript Compiler Features</h2>
+            <h2 className="text-2xl font-bold mb-3 text-neutral-900 dark:text-white">JavaScript Console Online</h2>
             <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Experience a professional IDE interface powered by Monaco Editor. Enjoy syntax highlighting, intelligent autocompletion, real-time diagnostics, and formatting right in your browser.
             </p>
@@ -166,30 +166,32 @@ export default function LandingPage() {
           <div className="space-y-4">
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">What is an online JavaScript compiler?</h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed">
-              An online JavaScript compiler is a web-based tool that allows you to write, edit, and execute JavaScript code directly in your internet browser. Unlike traditional local development environments, JS CodeLab doesn&apos;t require you to install Node.js, configure build tools, or set up a local server. You can simply open the website and start coding immediately.
+              An online JavaScript compiler (or JS runner) is a web-based tool that allows you to write, edit, and execute JavaScript code directly in your internet browser. Unlike traditional local development environments, JS CodeLab doesn&apos;t require you to install Node.js, configure build tools, or set up a local server. You can simply open the website and start coding immediately in a safe JS sandbox.
             </p>
           </div>
 
           <div className="space-y-4">
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">How do I run JavaScript online?</h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed">
-              Running JavaScript online with JS CodeLab is simple:
+              Testing JavaScript online with JS CodeLab is simple:
             </p>
             <ol className="list-decimal pl-6 space-y-2 text-neutral-600 dark:text-neutral-400 text-lg">
               <li>Open the <Link href="/playground" className="text-blue-500 hover:underline">Playground</Link>.</li>
               <li>Type your JavaScript code into the editor.</li>
               <li>Click the &quot;Run&quot; button or press <kbd className="bg-neutral-200 dark:bg-neutral-800 px-2 py-1 rounded text-sm">Ctrl + Enter</kbd>.</li>
-              <li>View your output immediately in the integrated console.</li>
+              <li>View your output immediately in the integrated JavaScript console online.</li>
             </ol>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Why use JS CodeLab?</h2>
+            <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Privacy and how it works</h2>
+            <p className="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed">
+              JS CodeLab is built with a strictly local-first architecture to guarantee your privacy and ensure lightning-fast execution:
+            </p>
             <ul className="list-disc pl-6 space-y-3 text-neutral-600 dark:text-neutral-400 text-lg">
-              <li><strong className="text-neutral-900 dark:text-white">It is completely free:</strong> No subscriptions, no hidden fees.</li>
-              <li><strong className="text-neutral-900 dark:text-white">Local-first privacy:</strong> Your projects are saved securely in your browser&apos;s IndexedDB. We don&apos;t store your code on our servers.</li>
-              <li><strong className="text-neutral-900 dark:text-white">Instant sharing:</strong> Share your code snippets effortlessly by generating a unique URL containing your exact code state.</li>
-              <li><strong className="text-neutral-900 dark:text-white">Professional tooling:</strong> Built with the same editor technology that powers Visual Studio Code.</li>
+              <li><strong className="text-neutral-900 dark:text-white">Execution in Web Workers:</strong> Your code is executed safely in an isolated background thread (Web Worker) directly within your browser.</li>
+              <li><strong className="text-neutral-900 dark:text-white">Code Saved in IndexedDB:</strong> All your projects, snippets, and settings are saved locally to your browser&apos;s IndexedDB.</li>
+              <li><strong className="text-neutral-900 dark:text-white">Nothing Sent to Servers:</strong> Your code is never transmitted, processed, or saved on any external servers. The only network requests made are to download the static assets required to run the editor.</li>
             </ul>
           </div>
           
@@ -209,12 +211,15 @@ export default function LandingPage() {
       
       <footer className="py-12 text-center border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
         <div className="max-w-4xl mx-auto px-4 flex flex-col items-center space-y-4">
-          <div className="flex gap-6 text-sm font-medium text-neutral-600 dark:text-neutral-400">
-            <Link href="/playground" className="hover:text-neutral-900 dark:hover:text-white transition-colors">JavaScript Compiler</Link>
-            <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-white transition-colors">JavaScript Examples</Link>
-            <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Learn JavaScript</Link>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium text-neutral-600 dark:text-neutral-400">
+            <Link href="/playground" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Playground</Link>
+            <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Examples</Link>
+            <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Learn</Link>
+            <Link href="/about" className="hover:text-neutral-900 dark:hover:text-white transition-colors">About</Link>
+            <Link href="/privacy" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Privacy</Link>
+            <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-white transition-colors">GitHub</a>
           </div>
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-500 mt-4">
             © 2026 JS CodeLab. Free Online JavaScript Compiler & Playground.
           </p>
         </div>
