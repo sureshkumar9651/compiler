@@ -2,6 +2,7 @@
 
 import { EditorPanel } from '@/components/features/editor/EditorPanel';
 import { ConsolePanel } from '@/components/features/console/ConsolePanel';
+import { ReactPreviewPanel } from '@/components/features/editor/ReactPreviewPanel';
 import { PlaygroundHeader } from '@/components/layout/PlaygroundHeader';
 import { StatusBar } from '@/components/layout/StatusBar';
 import { ProjectSidebar } from '@/components/features/projects/ProjectSidebar';
@@ -14,7 +15,7 @@ import { Loader2, Code2, Terminal } from 'lucide-react';
 import { Panel, Group, Separator } from 'react-resizable-panels';
 
 export default function PlaygroundPage() {
-  const { isConsoleOpen, isSidebarOpen, isFullscreen } = usePlaygroundStore();
+  const { isConsoleOpen, isSidebarOpen, isFullscreen, activeTab } = usePlaygroundStore();
   const { initialize, isLoading } = useProjectStore();
   const [mounted, setMounted] = useState(false);
   const [mobileTab, setMobileTab] = useState<'editor' | 'console'>('editor');
@@ -164,7 +165,7 @@ export default function PlaygroundPage() {
                   </Panel>
                   <Separator className="w-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-blue-500 transition-colors" />
                   <Panel defaultSize={40} minSize={20}>
-                    <ConsolePanel />
+                    {activeTab === 'javascript' ? <ConsolePanel /> : <ReactPreviewPanel />}
                   </Panel>
                 </Group>
               ) : (
@@ -185,12 +186,12 @@ export default function PlaygroundPage() {
                    <button
                      onClick={() => {
                        setMobileTab('console');
-                       usePlaygroundStore.getState().setConsoleOpen(true);
+                       if (activeTab === 'javascript') usePlaygroundStore.getState().setConsoleOpen(true);
                      }}
                      className={`flex-1 flex items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${mobileTab === 'console' ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-950' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'}`}
                    >
                      <Terminal className="w-4 h-4" />
-                     Output / Problems
+                     {activeTab === 'javascript' ? 'Output / Problems' : 'Live Preview'}
                    </button>
                  </div>
   
@@ -199,7 +200,7 @@ export default function PlaygroundPage() {
                      <EditorPanel />
                    </div>
                    <div className={`absolute inset-0 flex flex-col overflow-hidden ${mobileTab === 'console' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
-                     <ConsolePanel />
+                     {activeTab === 'javascript' ? <ConsolePanel /> : <ReactPreviewPanel />}
                    </div>
                  </div>
               </div>

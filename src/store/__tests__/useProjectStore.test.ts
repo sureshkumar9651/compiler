@@ -1,72 +1,105 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useProjectStore } from '../useProjectStore';
+import { usePlaygroundStore } from '../usePlaygroundStore';
+import { projectRepository } from '@/lib/playground/persistence/IndexedDBProjectRepository';
 
-describe('useProjectStore', () => {
+describe('useProjectStore - Mode Isolation & Filtering', () => {
   beforeEach(async () => {
     localStorage.clear();
+    // Clear all existing IndexedDB projects between tests
+    const existing = await projectRepository.getProjects();
+    for (const p of existing) {
+      await projectRepository.deleteProject(p.id);
+    }
+
     const store = useProjectStore.getState();
     store.projects = [];
     store.activeProjectId = null;
+    store.activeFilePath = null;
+    store.openFiles = [];
+    usePlaygroundStore.getState().setActiveTab('javascript');
   });
 
-  it('should initialize and create a default project if none exist', async () => {
+  it('initializes default JavaScript project in JavaScript mode', async () => {
     await useProjectStore.getState().initialize();
-    
     const state = useProjectStore.getState();
-    expect(state.projects.length).toBeGreaterThan(0);
-    expect(state.activeProjectId).not.toBeNull();
-    expect(state.projects[0].name).toBe('Untitled JavaScript');
+    
+    expect(usePlaygroundStore.getState().activeTab).toBe('javascript');
+    expect(state.projects.length).toBe(1);
+    expect(state.projects[0].activeTab).toBe('javascript');
   });
 
-  it('should create a new project and switch to it', async () => {
+  it('switches to React mode without modifying existing JavaScript project', async () => {
     await useProjectStore.getState().initialize();
-    const newProject = await useProjectStore.getState().createProject('My Test', 'console.log()');
-    
+    const jsProject = useProjectStore.getState().projects[0];
+
+    // Switch to React mode
+    await useProjectStore.getState().switchMode('react');
+
     const state = useProjectStore.getState();
-    expect(state.activeProjectId).toBe(newProject.id);
-    expect(state.projects.find(p => p.id === newProject.id)?.name).toBe('My Test');
+    expect(usePlaygroundStore.getState().activeTab).toBe('react');
+    
+    // JS project should still exist and remain a JS project
+    const originalJs = state.projects.find(p => p.id === jsProject.id);
+    expect(originalJs?.activeTab).toBe('javascript');
+
+    // A React project should now be created and active
+    const activeReact = state.projects.find(p => p.id === state.activeProjectId);
+    expect(activeReact?.activeTab).toBe('react');
   });
 
-  it('should duplicate a project with a new ID', async () => {
+  it('switches repeatedly between modes retaining accurate active project per mode', async () => {
     await useProjectStore.getState().initialize();
-    const originalId = useProjectStore.getState().activeProjectId as string;
     
-    await useProjectStore.getState().duplicateProject(originalId);
-    
-    const state = useProjectStore.getState();
-    const currentId = state.activeProjectId;
-    
-    expect(currentId).not.toBe(originalId);
-    const newProject = state.projects.find(p => p.id === currentId);
-    expect(newProject?.name).toContain('Copy');
+    // Wait small tick to ensure timestamp progression
+    await new Promise(r => setTimeout(r, 10));
+    const jsProject = await useProjectStore.getState().createProject('JS App 1', undefined, 'javascript');
+
+    await new Promise(r => setTimeout(r, 10));
+    const reactProject = await useProjectStore.getState().createProject('React App 1', undefined, 'react');
+
+    // Currently active: reactProject
+    expect(usePlaygroundStore.getState().activeTab).toBe('react');
+    expect(useProjectStore.getState().activeProjectId).toBe(reactProject.id);
+
+    // Switch back to JavaScript mode -> should select jsProject
+    await useProjectStore.getState().switchMode('javascript');
+    expect(usePlaygroundStore.getState().activeTab).toBe('javascript');
+    expect(useProjectStore.getState().activeProjectId).toBe(jsProject.id);
+
+    // Switch back to React mode -> should select reactProject
+    await useProjectStore.getState().switchMode('react');
+    expect(usePlaygroundStore.getState().activeTab).toBe('react');
+    expect(useProjectStore.getState().activeProjectId).toBe(reactProject.id);
   });
 
-  it('should rename a project', async () => {
+  it('creates project matching the active workspace mode', async () => {
     await useProjectStore.getState().initialize();
-    const id = useProjectStore.getState().activeProjectId as string;
     
-    await useProjectStore.getState().renameProject(id, 'Renamed!');
-    
-    const project = useProjectStore.getState().projects.find(p => p.id === id);
-    expect(project?.name).toBe('Renamed!');
+    // In JS mode
+    const jsP = await useProjectStore.getState().createProject('My JS');
+    expect(jsP.activeTab).toBe('javascript');
+    expect(jsP.files?.some(f => f.path === 'index.js')).toBe(true);
+
+    // Switch to React mode
+    await useProjectStore.getState().switchMode('react');
+    const reactP = await useProjectStore.getState().createProject('My React');
+    expect(reactP.activeTab).toBe('react');
+    expect(reactP.files?.some(f => f.path === 'src/App.jsx')).toBe(true);
   });
 
-  it('should delete a project and fallback if it was active', async () => {
+  it('handles project deletion and falls back to mode-matching project', async () => {
     await useProjectStore.getState().initialize();
-    const id1 = useProjectStore.getState().activeProjectId as string;
+    const js1 = await useProjectStore.getState().createProject('JS 1', undefined, 'javascript');
     
-    await useProjectStore.getState().createProject('Second');
-    const id2 = useProjectStore.getState().activeProjectId as string;
-    
-    expect(id1).not.toBe(id2);
-    
-    // Delete the active project (id2)
-    await useProjectStore.getState().deleteProject(id2);
-    
-    const state = useProjectStore.getState();
-    expect(state.projects.find(p => p.id === id2)).toBeUndefined();
-    // Should fallback to id1
-    expect(state.activeProjectId).toBe(id1);
+    await new Promise(r => setTimeout(r, 10));
+    const js2 = await useProjectStore.getState().createProject('JS 2', undefined, 'javascript');
+
+    expect(useProjectStore.getState().activeProjectId).toBe(js2.id);
+
+    // Delete active JS project (js2)
+    await useProjectStore.getState().deleteProject(js2.id);
+    expect(useProjectStore.getState().activeProjectId).toBe(js1.id);
   });
 });

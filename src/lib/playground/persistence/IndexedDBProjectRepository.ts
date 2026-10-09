@@ -1,5 +1,6 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { Project, ProjectRepository, CreateProjectInput, UpdateProjectInput } from '@/types/project';
+import { createDefaultJSFiles, createDefaultReactFiles } from '@/utils/fileTree';
 
 interface JSCodeLabDB extends DBSchema {
   projects: {
@@ -11,6 +12,42 @@ interface JSCodeLabDB extends DBSchema {
 
 const DB_NAME = 'js-codelab';
 const DB_VERSION = 1;
+
+export function migrateProject(project: Project): Project {
+  if (!project.files || project.files.length === 0) {
+    const isReact = project.activeTab === 'react' || project.language === 'react' || Boolean(project.reactCode && project.reactCode.trim());
+    if (isReact) {
+      project.language = 'react';
+      project.activeTab = 'react';
+      project.files = createDefaultReactFiles(project.reactCode);
+      project.activeFilePath = 'src/App.jsx';
+      project.openFiles = ['src/App.jsx'];
+      project.expandedFolders = ['src', 'public'];
+    } else {
+      project.language = 'javascript';
+      project.activeTab = 'javascript';
+      project.files = createDefaultJSFiles(project.code);
+      project.activeFilePath = 'index.js';
+      project.openFiles = ['index.js'];
+      project.expandedFolders = [];
+    }
+  } else {
+    if (!project.language) {
+      project.language = project.activeTab === 'react' ? 'react' : 'javascript';
+    }
+    if (!project.activeFilePath) {
+      const firstFile = project.files.find(f => f.type === 'file');
+      project.activeFilePath = firstFile ? firstFile.path : 'index.js';
+    }
+    if (!project.openFiles || project.openFiles.length === 0) {
+      project.openFiles = project.activeFilePath ? [project.activeFilePath] : [];
+    }
+    if (!project.expandedFolders) {
+      project.expandedFolders = project.language === 'react' ? ['src'] : [];
+    }
+  }
+  return project;
+}
 
 export class IndexedDBProjectRepository implements ProjectRepository {
   private dbPromise: Promise<IDBPDatabase<JSCodeLabDB>>;
@@ -25,23 +62,21 @@ export class IndexedDBProjectRepository implements ProjectRepository {
             }
           },
         })
-      : Promise.resolve(null as unknown as IDBPDatabase<JSCodeLabDB>); // Handle SSR gracefully
+      : Promise.resolve(null as unknown as IDBPDatabase<JSCodeLabDB>);
   }
 
   async getProjects(): Promise<Project[]> {
     const db = await this.dbPromise;
     if (!db) return [];
     
-    // Sort by updatedAt descending
     const tx = db.transaction('projects', 'readonly');
     const store = tx.objectStore('projects');
     const index = store.index('updatedAt');
-    const projects = [];
+    const projects: Project[] = [];
     
-    // Iterate cursor backwards for descending order
     let cursor = await index.openCursor(null, 'prev');
     while (cursor) {
-      projects.push(cursor.value);
+      projects.push(migrateProject({ ...cursor.value }));
       cursor = await cursor.continue();
     }
     
@@ -51,7 +86,9 @@ export class IndexedDBProjectRepository implements ProjectRepository {
   async getProject(id: string): Promise<Project | null> {
     const db = await this.dbPromise;
     if (!db) return null;
-    return (await db.get('projects', id)) || null;
+    const project = await db.get('projects', id);
+    if (!project) return null;
+    return migrateProject({ ...project });
   }
 
   async createProject(input: CreateProjectInput): Promise<Project> {
@@ -59,17 +96,29 @@ export class IndexedDBProjectRepository implements ProjectRepository {
     if (!db) throw new Error('Database not initialized');
 
     const now = Date.now();
+    const isReact = input.activeTab ? input.activeTab === 'react' : Boolean(input.reactCode && input.reactCode.trim());
+    const defaultFiles = isReact 
+      ? createDefaultReactFiles(input.reactCode) 
+      : createDefaultJSFiles(input.code);
+
     const project: Project = {
       id: crypto.randomUUID(),
       name: input.name,
-      language: 'javascript',
-      code: input.code,
+      language: isReact ? 'react' : 'javascript',
+      code: input.code || (isReact ? '' : 'console.log("Hello World!");'),
+      reactCode: input.reactCode,
+      activeTab: isReact ? 'react' : 'javascript',
+      files: input.files || defaultFiles,
+      activeFilePath: input.activeFilePath || (isReact ? 'src/App.jsx' : 'index.js'),
+      openFiles: input.openFiles || [input.activeFilePath || (isReact ? 'src/App.jsx' : 'index.js')],
+      expandedFolders: input.expandedFolders || (isReact ? ['src'] : []),
       createdAt: now,
       updatedAt: now,
     };
 
-    await db.add('projects', project);
-    return project;
+    const migrated = migrateProject(project);
+    await db.add('projects', migrated);
+    return migrated;
   }
 
   async updateProject(id: string, input: UpdateProjectInput): Promise<Project> {
@@ -84,11 +133,11 @@ export class IndexedDBProjectRepository implements ProjectRepository {
       throw new Error(`Project ${id} not found`);
     }
 
-    const updatedProject: Project = {
+    const updatedProject: Project = migrateProject({
       ...existing,
       ...input,
       updatedAt: Date.now()
-    };
+    });
 
     await store.put(updatedProject);
     await tx.done;
@@ -103,5 +152,5 @@ export class IndexedDBProjectRepository implements ProjectRepository {
   }
 }
 
-// Singleton instance for the application
 export const projectRepository = new IndexedDBProjectRepository();
+

@@ -4,6 +4,7 @@ import { EditorSettingsDialog } from './EditorSettingsDialog';
 import { formatJavaScript } from '../services/formatter';
 import { usePlaygroundStore } from '@/store/usePlaygroundStore';
 import { useEditorStore } from '@/store/useEditorStore';
+import { useProjectStore } from '@/store/useProjectStore';
 
 interface EditorToolbarProps {
   onOpenCommandPalette: () => void;
@@ -14,21 +15,27 @@ export function EditorToolbar({ onOpenCommandPalette }: EditorToolbarProps) {
   const [isFormatting, setIsFormatting] = useState(false);
   const [formatError, setFormatError] = useState<string | null>(null);
   
-  const { code, setCode } = usePlaygroundStore();
+  const { code, reactCode, setCode, setReactCode, activeTab, setActiveTab } = usePlaygroundStore();
   const { tabSize, insertSpaces } = useEditorStore();
+  const { switchMode } = useProjectStore();
 
   const handleFormat = async () => {
-    if (isFormatting || !code.trim()) return;
+    const targetCode = activeTab === 'javascript' ? code : reactCode;
+    if (isFormatting || !targetCode.trim()) return;
     
     setIsFormatting(true);
     setFormatError(null);
     
-    const formatted = await formatJavaScript(code, tabSize, !insertSpaces);
+    const formatted = await formatJavaScript(targetCode, tabSize, !insertSpaces);
     
     if (formatted) {
-      setCode(formatted);
+      if (activeTab === 'javascript') {
+        setCode(formatted);
+      } else {
+        setReactCode(formatted);
+      }
     } else {
-      setFormatError('Unable to format code. The JavaScript may contain a syntax error.');
+      setFormatError(`Unable to format code. The ${activeTab === 'javascript' ? 'JavaScript' : 'React'} may contain a syntax error.`);
       setTimeout(() => setFormatError(null), 3000);
     }
     
@@ -38,10 +45,29 @@ export function EditorToolbar({ onOpenCommandPalette }: EditorToolbarProps) {
   return (
     <>
       <div className="flex items-center justify-between px-2 sm:px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-            JavaScript
-          </span>
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="flex space-x-1 p-0.5 bg-neutral-200 dark:bg-neutral-800 rounded-lg">
+            <button
+              onClick={() => switchMode('javascript')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                activeTab === 'javascript'
+                  ? 'bg-white dark:bg-neutral-900 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
+              }`}
+            >
+              JavaScript
+            </button>
+            <button
+              onClick={() => switchMode('react')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                activeTab === 'react'
+                  ? 'bg-white dark:bg-neutral-900 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
+              }`}
+            >
+              React JS
+            </button>
+          </div>
           {formatError && (
             <span className="text-xs text-amber-600 dark:text-amber-500 ml-2 animate-in fade-in truncate max-w-[150px] sm:max-w-none">
               {formatError}

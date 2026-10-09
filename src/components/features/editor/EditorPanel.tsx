@@ -3,26 +3,24 @@
 import Editor, { useMonaco, Monaco } from '@monaco-editor/react';
 import { usePlaygroundStore } from '@/store/usePlaygroundStore';
 import { useProjectStore } from '@/store/useProjectStore';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Loader2 } from 'lucide-react';
 import { useExecution } from '@/hooks/useExecution';
 import { useEditorStore } from '@/store/useEditorStore';
 import { useEditorStateStore } from '@/store/useEditorStateStore';
 import { EditorToolbar } from '@/features/editor/components/EditorToolbar';
+import { EditorTabBar } from '@/components/features/editor/EditorTabBar';
 import { CommandPalette } from '@/features/editor/components/CommandPalette';
 import { ShareDialog } from '@/features/sharing/components/share-dialog';
 import { EditorSettingsDialog } from '@/features/editor/components/EditorSettingsDialog';
 import { getErrorMessage } from '@/utils/error';
-import { useState } from 'react';
 import { formatJavaScript } from '@/features/editor/services/formatter';
-
-
-
+import { getFileLanguage } from '@/utils/fileTree';
 
 export function EditorPanel() {
-  const { code, setCode, lastError } = usePlaygroundStore();
-  const { updateCode, manualSave, activeProjectId } = useProjectStore();
+  const { code, reactCode, setCode, setReactCode, activeTab, lastError } = usePlaygroundStore();
+  const { updateCode, updateReactCode, updateFileContent, manualSave, activeProjectId, activeFilePath, projects } = useProjectStore();
   const { executeCode } = useExecution();
   const monaco = useMonaco();
   const { resolvedTheme } = useTheme();
@@ -39,8 +37,12 @@ export function EditorPanel() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
 
+  const activeProject = projects.find(p => p.id === activeProjectId);
+  const activeFile = activeProject?.files?.find(f => f.path === activeFilePath);
+  const currentLanguage = activeFilePath ? getFileLanguage(activeFilePath) : (activeTab === 'react' ? 'javascript' : 'javascript');
+  const currentContent = activeFile !== undefined ? (activeFile.content || '') : (activeTab === 'javascript' ? code : reactCode);
+
   const handleEditorWillMount = (monaco: Monaco) => {
-    // Define custom themes
     monaco.editor.defineTheme('custom-dark', {
       base: 'vs-dark',
       inherit: true,
@@ -65,18 +67,44 @@ export function EditorPanel() {
       },
     });
 
-    // Configure JavaScript Language Service
     monaco.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.typescript.ScriptTarget.ESNext,
       allowNonTsExtensions: true,
       moduleResolution: monaco.typescript.ModuleResolutionKind.NodeJs,
       module: monaco.typescript.ModuleKind.CommonJS,
-      noEmit: true,
       typeRoots: ['node_modules/@types'],
-      lib: ['esnext', 'dom'], // Included 'dom' to resolve console and web APIs
+      lib: ['esnext', 'dom'], 
       allowJs: true,
-      checkJs: true, // Type checking enabled but we will control diagnostics via setDiagnosticsOptions
+      checkJs: true,
+      jsx: monaco.typescript.JsxEmit.React,
+      jsxFactory: 'React.createElement',
+      jsxFragmentFactory: 'React.Fragment',
+      allowSyntheticDefaultImports: true
     });
+
+    monaco.typescript.javascriptDefaults.addExtraLib(
+      `declare module 'react' {
+        export as namespace React;
+        const React: any;
+        export default React;
+        export const useState: any;
+        export const useEffect: any;
+        export const useRef: any;
+        export const useMemo: any;
+        export const useCallback: any;
+        export const useContext: any;
+        export const useReducer: any;
+      }`,
+      'file:///node_modules/@types/react/index.d.ts'
+    );
+    
+    monaco.typescript.javascriptDefaults.addExtraLib(
+      `declare module 'react-dom/client' {
+        export const createRoot: any;
+        export const hydrateRoot: any;
+      }`,
+      'file:///node_modules/@types/react-dom/client.d.ts'
+    );
   };
 
   useEffect(() => {
@@ -89,9 +117,6 @@ export function EditorPanel() {
     }
   }, [monaco, suggestOn, syntaxDiagnosticsOn, semanticDiagnosticsOn]);
 
-
-
-  // Handle setting markers for errors
   useEffect(() => {
     if (!monaco || !editorRef.current) return;
     const model = editorRef.current.getModel();
@@ -113,7 +138,6 @@ export function EditorPanel() {
     }
   }, [lastError, monaco]);
 
-  // Track all markers to surface in the Problems Panel
   useEffect(() => {
     if (!monaco) return;
     
@@ -142,8 +166,15 @@ export function EditorPanel() {
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
-      setCode(value);
-      updateCode(value);
+      if (activeFilePath) {
+        updateFileContent(activeFilePath, value);
+      } else if (activeTab === 'javascript') {
+        setCode(value);
+        updateCode(value);
+      } else {
+        setReactCode(value);
+        updateReactCode(value);
+      }
     }
   };
 
@@ -152,20 +183,24 @@ export function EditorPanel() {
     const editor = editorInstance as any;
     editorRef.current = editor;
 
-    // Hook Ctrl+Enter / Cmd+Enter
     editor.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.Enter, () => {
       executeCode();
     });
 
-    // Hook Ctrl+S / Cmd+S
     editor.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyS, async () => {
       if (useEditorStore.getState().formatOnSave) {
         const currentCode = editor.getValue();
         const formatted = await formatJavaScript(currentCode, useEditorStore.getState().tabSize, !useEditorStore.getState().insertSpaces);
         if (formatted) {
-          setCode(formatted);
-          updateCode(formatted);
-          // Small delay to ensure the code update propagates before save
+          if (activeFilePath) {
+            updateFileContent(activeFilePath, formatted);
+          } else if (activeTab === 'javascript') {
+            setCode(formatted);
+            updateCode(formatted);
+          } else {
+            setReactCode(formatted);
+            updateReactCode(formatted);
+          }
           setTimeout(() => manualSave(), 50);
           return;
         }
@@ -173,12 +208,10 @@ export function EditorPanel() {
       manualSave();
     });
 
-    // Hook Ctrl+Shift+P
     editor.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyMod.Shift | monacoInstance.KeyCode.KeyP, () => {
       setIsCommandPaletteOpen(true);
     });
 
-    // Track Cursor Position
     editor.onDidChangeCursorPosition((e: unknown) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pos = (e as any).position;
@@ -201,14 +234,15 @@ export function EditorPanel() {
   return (
     <div className="flex-1 w-full h-full relative border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col overflow-hidden">
       <EditorToolbar onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} />
+      <EditorTabBar />
       
       <div className="flex-1 min-h-0 relative">
         {isReady && (
           <Editor
             height="100%"
-            defaultLanguage="javascript"
+            language={currentLanguage}
             theme={resolvedTheme === 'dark' ? 'custom-dark' : 'custom-light'}
-            value={code}
+            value={currentContent}
             onChange={handleEditorChange}
             beforeMount={handleEditorWillMount}
             onMount={handleEditorMount}
@@ -259,3 +293,4 @@ export function EditorPanel() {
     </div>
   );
 }
+

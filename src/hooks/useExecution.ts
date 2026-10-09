@@ -15,6 +15,13 @@ export function useExecution() {
   };
 
   const executeCode = useCallback(async () => {
+    const { activeTab, executeReact, code, setStatus, setExecutionTime, setLastError, clearConsole, addConsoleEntry, setCurrentExecutionId } = usePlaygroundStore.getState();
+    
+    if (activeTab === 'react') {
+      executeReact();
+      return;
+    }
+
     const service = getService();
     const executionId = crypto.randomUUID();
     
@@ -67,12 +74,17 @@ export function useExecution() {
   }, [code, clearConsole, setStatus, setLastError, setExecutionTime, addConsoleEntry, setCurrentExecutionId]);
 
   const stopExecution = useCallback(() => {
+    const { activeTab, setStatus, addConsoleEntry, setCurrentExecutionId, currentExecutionId } = usePlaygroundStore.getState();
+    
+    if (activeTab === 'react') {
+      return; // Stop doesn't do much for React preview yet
+    }
+
     if (serviceRef.current) {
-      const currentId = usePlaygroundStore.getState().currentExecutionId;
-      if (currentId) {
+      if (currentExecutionId) {
         serviceRef.current.stop();
         setStatus('stopped');
-        addConsoleEntry(currentId, 'system', '■ Execution stopped');
+        addConsoleEntry(currentExecutionId, 'system', '■ Execution stopped');
         setCurrentExecutionId(null);
       }
     }
