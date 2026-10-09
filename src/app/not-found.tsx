@@ -26,13 +26,13 @@ export default function NotFound() {
         </p>
         
         <div className="flex items-center gap-4 flex-wrap justify-center">
-          <Link 
+          <a 
             href="/playground" 
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-full font-semibold transition-all"
           >
             Open Playground
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </a>
           <Link 
             href="/examples" 
             className="flex items-center gap-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white px-6 py-3 rounded-full font-semibold transition-all"

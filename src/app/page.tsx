@@ -63,13 +63,13 @@ export default function LandingPage() {
             JS CodeLab is a free online JavaScript runner and playground for writing, running, testing, and learning JavaScript directly in your browser. Use this lightweight JS sandbox without any installation or account.
           </p>
           <div className="flex items-center justify-center pt-4 gap-4 flex-wrap">
-            <Link 
+            <a 
               href="/playground" 
               className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20"
             >
               Open JavaScript Compiler
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </a>
             <Link 
               href="/examples" 
               className="group flex items-center gap-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white px-8 py-4 rounded-full font-semibold text-lg transition-all"
@@ -177,7 +177,7 @@ export default function LandingPage() {
               Testing JavaScript online with JS CodeLab is simple:
             </p>
             <ol className="list-decimal pl-6 space-y-2 text-neutral-600 dark:text-neutral-400 text-lg">
-              <li>Open the <Link href="/playground" className="text-blue-500 hover:underline">Playground</Link>.</li>
+              <li>Open the <a href="/playground" className="text-blue-500 hover:underline">Playground</a>.</li>
               <li>Type your JavaScript code into the editor.</li>
               <li>Click the &quot;Run&quot; button or press <kbd className="bg-neutral-200 dark:bg-neutral-800 px-2 py-1 rounded text-sm">Ctrl + Enter</kbd>.</li>
               <li>View your output immediately in the integrated JavaScript console online.</li>

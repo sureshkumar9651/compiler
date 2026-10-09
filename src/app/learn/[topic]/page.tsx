@@ -131,13 +131,13 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
                 pre: ({ node: _node, ...props }) => (
                   <div className="relative my-6">
                     <div className="absolute top-0 right-0 flex items-center pr-2 pt-2 z-10">
-                      <Link
+                      <a
                         href="/playground"
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-md shadow-sm transition-colors"
                       >
                         <Play className="h-3 w-3" />
                         Try in CodeLab
-                      </Link>
+                      </a>
                     </div>
                     <pre className="bg-neutral-100 dark:bg-neutral-950 p-4 rounded-lg overflow-x-auto text-sm" {...props} />
                   </div>
@@ -176,13 +176,13 @@ export default async function LearnTopicPage({ params }: { params: Promise<{ top
           <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-xl mx-auto">
             The best way to learn JavaScript is by writing code. Open our free online playground and test what you&apos;ve just learned.
           </p>
-          <Link 
+          <a 
             href="/playground" 
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all"
           >
             <Play className="h-5 w-5" />
             Open JavaScript Compiler
-          </Link>
+          </a>
         </div>
       </main>
       

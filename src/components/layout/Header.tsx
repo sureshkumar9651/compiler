@@ -28,7 +28,7 @@ export function Header() {
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-        <Link href="/playground" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Playground</Link>
+        <a href="/playground" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Playground</a>
         <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Examples</Link>
         <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Learn</Link>
         <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
@@ -48,13 +48,13 @@ export function Header() {
       {isMenuOpen && (
         <div className="absolute top-full left-0 right-0 z-50 bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800 shadow-lg md:hidden">
           <nav className="flex flex-col p-4 space-y-4 text-base font-medium text-neutral-600 dark:text-neutral-300">
-            <Link 
+            <a 
               href="/playground" 
               className="px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-900 rounded-xl transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Playground
-            </Link>
+            </a>
             <Link 
               href="/examples" 
               className="px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-900 rounded-xl transition-colors"
