@@ -1,11 +1,11 @@
-import { basicsExamples } from './basics';
-import { functionsExamples } from './functions';
-import { arraysExamples } from './arrays';
-import { objectsExamples } from './objects';
-import { modernExamples } from './modern';
-import { asyncExamples } from './async';
-import { errorExamples } from './errors';
-import { algorithmExamples } from './algorithms';
+import { basicsExamples } from "./basics";
+import { functionsExamples } from "./functions";
+import { arraysExamples } from "./arrays";
+import { objectsExamples } from "./objects";
+import { modernExamples } from "./modern";
+import { asyncExamples } from "./async";
+import { errorExamples } from "./errors";
+import { algorithmExamples } from "./algorithms";
 
 export const allExamples = [
   ...basicsExamples,
@@ -15,7 +15,7 @@ export const allExamples = [
   ...modernExamples,
   ...asyncExamples,
   ...errorExamples,
-  ...algorithmExamples
+  ...algorithmExamples,
 ];
 
-export { starterTemplates } from './templates';
+export { starterTemplates } from "./templates";

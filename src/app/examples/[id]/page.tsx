@@ -102,22 +102,6 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <ExampleDetail example={example} />
         
-        {/* Additional SEO content explaining the example */}
-        <section className="mt-16 max-w-4xl mx-auto prose dark:prose-invert">
-          <h2 className="text-2xl font-bold mb-4">Understanding the {example.title} Example</h2>
-          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-            This interactive JavaScript example demonstrates {example.description.toLowerCase()}. You can review the code snippet above, or click the <strong>&quot;Open in Playground&quot;</strong> button to run it instantly in your browser. 
-          </p>
-          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-            The JS CodeLab compiler allows you to test this code safely without installing Node.js or any local development environment. Feel free to modify the variables, functions, and logic to see how the output changes in real-time.
-          </p>
-          <h3 className="text-xl font-bold mb-3">Next Steps</h3>
-          <ul className="list-disc pl-5 text-neutral-600 dark:text-neutral-400">
-            <li>Run the code to see the actual console output.</li>
-            <li>Modify the implementation to test edge cases.</li>
-            <li>Share your modified code with others using our share feature.</li>
-          </ul>
-        </section>
       </main>
       
       <footer className="py-8 text-center text-sm text-neutral-500 border-t border-neutral-200 dark:border-neutral-800 mt-auto">

@@ -1,13 +1,15 @@
 'use client';
 
 import { CodeExample } from '@/features/examples/types/example';
-import Editor from '@monaco-editor/react';
+import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import { ArrowLeft, Check, Copy, Play } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useProjectStore } from '@/store/useProjectStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 interface ExampleDetailProps {
   example: CodeExample;
@@ -18,6 +20,11 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
   const router = useRouter();
   const { createProject, selectProject, projects } = useProjectStore();
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleOpenPlayground = async () => {
     let newName = example.title;
@@ -45,13 +52,14 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      <Link 
-        href="/examples"
-        className="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Examples
-      </Link>
+      {/* Breadcrumb Navigation handled in JSON-LD but we can provide a visual one too */}
+      <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+        <Link href="/" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Home</Link>
+        <span>/</span>
+        <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Examples</Link>
+        <span>/</span>
+        <span className="text-neutral-900 dark:text-neutral-50 font-medium">{example.title}</span>
+      </nav>
 
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-neutral-200 dark:border-neutral-800">
         <div className="space-y-4 max-w-2xl">
@@ -112,23 +120,92 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
           <span className="ml-4 text-xs font-mono text-neutral-500">example.js</span>
         </div>
         
-        <div className="h-[500px] w-full">
-          <Editor
-            height="100%"
-            defaultLanguage="javascript"
-            value={example.code}
-            theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
-            options={{
-              readOnly: true,
-              minimap: { enabled: false },
-              fontSize: 14,
-              fontFamily: 'var(--font-geist-mono), monospace',
-              padding: { top: 24, bottom: 24 },
-              scrollBeyondLastLine: false,
-              wordWrap: 'on',
-              lineNumbersMinChars: 4,
-            }}
-          />
+        <div className="h-[500px] w-full relative">
+          {!mounted ? (
+            <pre className="absolute inset-0 overflow-auto p-6 font-mono text-sm text-neutral-800 dark:text-neutral-200">
+              <code>{example.code}</code>
+            </pre>
+          ) : (
+            <MonacoEditor
+              height="100%"
+              defaultLanguage="javascript"
+              value={example.code}
+              theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                fontFamily: 'var(--font-geist-mono), monospace',
+                padding: { top: 24, bottom: 24 },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                lineNumbersMinChars: 4,
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Dynamic Content Sections */}
+      <div className="mt-16 space-y-12">
+        {example.explanation && (
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-2xl font-bold">Understanding the Code</h2>
+            <p className="text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">{example.explanation}</p>
+          </section>
+        )}
+
+        {example.expectedOutput && (
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-2xl font-bold">Expected Output</h2>
+            <pre className="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg font-mono text-sm text-neutral-800 dark:text-neutral-200 overflow-x-auto">
+              <code>{example.expectedOutput}</code>
+            </pre>
+          </section>
+        )}
+
+        {example.commonMistakes && example.commonMistakes.length > 0 && (
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-2xl font-bold">Common Mistakes</h2>
+            <ul className="list-disc pl-6 space-y-2 text-neutral-600 dark:text-neutral-400">
+              {example.commonMistakes.map((mistake, i) => (
+                <li key={i}>{mistake}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {example.faq && example.faq.length > 0 && (
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+            <div className="space-y-6">
+              {example.faq.map((q, i) => (
+                <div key={i}>
+                  <h3 className="font-semibold text-lg text-neutral-900 dark:text-neutral-100 mb-2">{q.question}</h3>
+                  <p className="text-neutral-600 dark:text-neutral-400">{q.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="pt-8 border-t border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          {example.learnGuideSlug && (
+            <Link 
+              href={`/learn/${example.learnGuideSlug}`} 
+              className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              Read the full {example.learnGuideSlug.replace('-', ' ')} guide →
+            </Link>
+          )}
+          {example.relatedSlugs && example.relatedSlugs.length > 0 && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-neutral-500">Related:</span>
+              <Link href={`/examples/${example.relatedSlugs[0]}`} className="text-sm font-medium hover:underline">
+                {example.relatedSlugs[0].replace('-', ' ')}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

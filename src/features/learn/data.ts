@@ -3,6 +3,9 @@ export interface LearnTopic {
   title: string;
   description: string;
   content: string;
+  codeSnippet?: string;
+  faq?: { question: string; answer: string }[];
+  relatedExamples?: string[];
 }
 
 export const learnTopics: LearnTopic[] = [
@@ -36,7 +39,26 @@ JavaScript has several basic data types:
 - **Boolean**: Logical values, \`true\` or \`false\`
 - **Object**: Collections of related data
 - **Array**: Ordered lists of data
-    `
+    `,
+    codeSnippet: `// Example: JavaScript Basics
+const welcomeMessage = "Welcome to JS CodeLab!";
+let lessonComplete = false;
+
+if (!lessonComplete) {
+  console.log(welcomeMessage);
+  console.log("Let's learn variables and types!");
+}`,
+    faq: [
+      {
+        question: "What is the difference between let and const?",
+        answer: "Use 'const' for variables that shouldn't be reassigned. Use 'let' for variables whose values will change."
+      },
+      {
+        question: "Can a string be changed after it is created?",
+        answer: "No, primitive types like strings are immutable in JavaScript. When you 'modify' a string, you're actually creating a new one."
+      }
+    ],
+    relatedExamples: ["hello-world", "variables"]
   },
   {
     id: 'javascript-functions',
@@ -66,7 +88,27 @@ console.log(add(5, 10)); // 15
 \`\`\`
 
 Arrow functions do not bind their own \`this\`, making them especially useful for callbacks.
-    `
+    `,
+    codeSnippet: `// Example: Functions & Arrow Functions
+function calculateArea(width, height) {
+  return width * height;
+}
+
+const getPerimeter = (width, height) => 2 * (width + height);
+
+console.log("Area:", calculateArea(5, 10));
+console.log("Perimeter:", getPerimeter(5, 10));`,
+    faq: [
+      {
+        question: "Do arrow functions have their own 'this' context?",
+        answer: "No, arrow functions inherit 'this' from their enclosing scope. This makes them great for callbacks but bad for object methods."
+      },
+      {
+        question: "Can I return an object implicitly from an arrow function?",
+        answer: "Yes, but you must wrap the object in parentheses: const makeObj = () => ({ id: 1 });"
+      }
+    ],
+    relatedExamples: ["basic-function", "arrow-function"]
   },
   {
     id: 'javascript-arrays',
