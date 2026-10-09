@@ -24,7 +24,6 @@ export const metadata: Metadata = {
   },
   description: "Write, run, test, and learn JavaScript online with JS CodeLab — a free browser-based JavaScript compiler and playground with examples and developer-friendly tools.",
   applicationName: "JS CodeLab",
-  keywords: ["JavaScript compiler", "JavaScript playground", "JavaScript editor", "run JavaScript online", "learn JavaScript"],
   authors: [{ name: "JS CodeLab" }],
   creator: "JS CodeLab",
   publisher: "JS CodeLab",
@@ -38,11 +37,20 @@ export const metadata: Metadata = {
     siteName: "JS CodeLab",
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'JS CodeLab - Free Online JavaScript Compiler & Playground',
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Free Online JavaScript Compiler & Playground | JS CodeLab",
     description: "Write, run, test, and learn JavaScript online with JS CodeLab.",
+    images: ['/og.png'],
   },
 };
 

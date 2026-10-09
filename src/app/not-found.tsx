@@ -3,7 +3,7 @@ import { TerminalSquare, ArrowRight } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Page Not Found | JS CodeLab',
+  title: 'Page Not Found',
   description: 'The page you are looking for does not exist.',
 };
 

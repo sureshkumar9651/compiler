@@ -21,12 +21,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   
   if (!example) {
     return {
-      title: 'Example Not Found | JS CodeLab',
+      title: 'Example Not Found',
     };
   }
 
   return {
-    title: `${example.title} JavaScript Example — Run Online | JS CodeLab`,
+    title: `${example.title} JavaScript Example — Run Online`,
     description: `Learn how to use ${example.title} in JavaScript. View the code, read the explanation, and run this example instantly in our free online compiler.`,
     alternates: {
       canonical: `/examples/${example.id}`,
@@ -35,6 +35,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: `${example.title} JavaScript Example | JS CodeLab`,
       description: `Run and edit the ${example.title} JavaScript example directly in your browser.`,
       url: `/examples/${example.id}`,
+      siteName: 'JS CodeLab',
+      locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${example.title} JavaScript Example | JS CodeLab`,
+      description: `Run and edit the ${example.title} JavaScript example directly in your browser.`,
     }
   };
 }

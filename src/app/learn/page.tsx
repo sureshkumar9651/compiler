@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { learnTopics } from '@/features/learn/data';
 
 export const metadata: Metadata = {
-  title: 'Learn JavaScript | JS CodeLab',
+  title: 'Learn JavaScript',
   description: 'Learn JavaScript with interactive tutorials, practical examples, and clear explanations. Write and run code directly in your browser.',
   alternates: {
     canonical: '/learn',
@@ -13,6 +13,14 @@ export const metadata: Metadata = {
     title: 'Learn JavaScript Online | JS CodeLab',
     description: 'Learn JavaScript with interactive tutorials and real-time execution in the browser.',
     url: '/learn',
+    siteName: 'JS CodeLab',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Learn JavaScript Online | JS CodeLab',
+    description: 'Learn JavaScript with interactive tutorials and real-time execution in the browser.',
   }
 };
 

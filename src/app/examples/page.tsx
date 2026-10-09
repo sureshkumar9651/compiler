@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ExamplesClient } from '@/features/examples/components/examples-client';
 
 export const metadata: Metadata = {
-  title: 'JavaScript Examples | JS CodeLab',
+  title: 'JavaScript Examples',
   description: 'Explore our curated library of interactive JavaScript examples. Learn, experiment, and run JavaScript code directly in your browser with our free online playground.',
   alternates: {
     canonical: '/examples',
@@ -13,7 +13,15 @@ export const metadata: Metadata = {
     title: 'Interactive JavaScript Examples | JS CodeLab',
     description: 'Learn and run JavaScript directly in your browser with our curated examples.',
     url: '/examples',
-  }
+    siteName: 'JS CodeLab',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Interactive JavaScript Examples | JS CodeLab',
+    description: 'Learn and run JavaScript directly in your browser with our curated examples.',
+  },
 };
 
 export default function ExamplesPage() {

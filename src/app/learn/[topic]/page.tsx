@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: { params: Promise<{ topic: st
   
   if (!topic) {
     return {
-      title: 'Topic Not Found | JS CodeLab',
+      title: 'Topic Not Found',
     };
   }
 
   return {
-    title: `${topic.title} Tutorial — Learn JavaScript Online | JS CodeLab`,
+    title: `${topic.title} Tutorial — Learn JavaScript Online`,
     description: topic.description,
     alternates: {
       canonical: `/learn/${topic.id}`,
@@ -31,6 +31,14 @@ export async function generateMetadata({ params }: { params: Promise<{ topic: st
       title: `${topic.title} | Learn JavaScript`,
       description: topic.description,
       url: `/learn/${topic.id}`,
+      siteName: 'JS CodeLab',
+      locale: 'en_US',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${topic.title} | Learn JavaScript`,
+      description: topic.description,
     }
   };
 }

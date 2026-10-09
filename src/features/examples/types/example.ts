@@ -18,4 +18,13 @@ export interface CodeExample {
   difficulty: ExampleDifficulty;
   code: string;
   tags: string[];
+  explanation?: string;
+  expectedOutput?: string;
+  commonMistakes?: string[];
+  faq?: { question: string; answer: string }[];
+  relatedSlugs?: string[];
+  learnGuideSlug?: string;
+  seoDescription?: string;
+  datePublished?: string;
+  dateModified?: string;
 }
