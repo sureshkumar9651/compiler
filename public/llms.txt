@@ -1,0 +1,20 @@
+# JS CodeLab
+JS CodeLab is a free online JavaScript compiler and playground. It allows developers to write, run, test, and learn JavaScript directly in their browser without requiring any installation or user accounts.
+
+It features a professional-grade editor powered by Monaco, secure local execution using Web Workers, and offline project storage using IndexedDB. All code remains strictly on the user's device.
+
+## Key Resources
+- **Home**: https://jscodelab-js.vercel.app/
+- **Playground**: https://jscodelab-js.vercel.app/playground
+- **Examples**: https://jscodelab-js.vercel.app/examples
+- **Learn Guides**: https://jscodelab-js.vercel.app/learn
+- **About**: https://jscodelab-js.vercel.app/about
+- **Privacy Policy**: https://jscodelab-js.vercel.app/privacy
+- **GitHub Repository**: https://github.com/sureshkumar9651/compiler
+
+## Technical Architecture
+- **Framework**: Next.js (App Router)
+- **Editor**: Monaco Editor (@monaco-editor/react)
+- **Execution**: Client-side Web Workers
+- **Styling**: Tailwind CSS
+- **Data Storage**: IndexedDB (idb package)

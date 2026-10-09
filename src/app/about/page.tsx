@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { TerminalSquare, Github, Info, Shield } from 'lucide-react';
+import { TerminalSquare, Info, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'About JS CodeLab',
@@ -64,7 +64,7 @@ export default function AboutPage() {
               <li><strong>Pro features:</strong> Powered by the Monaco Editor, bringing VS Code-level IntelliSense, syntax highlighting, and formatting directly to the web.</li>
             </ul>
 
-            <h2 className="flex items-center gap-2"><Github className="w-6 h-6 text-neutral-900 dark:text-white" /> Open Source</h2>
+            <h2 className="flex items-center gap-2">Open Source</h2>
             <p>
               We believe in the power of open source. The entire JS CodeLab platform is open source and available on GitHub. We welcome contributions, bug reports, and feature requests from the community.
             </p>
