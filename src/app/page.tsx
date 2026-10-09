@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Zap, Code2, BookOpen } from 'lucide-react';
-import { HomeHeader } from '@/components/layout/HomeHeader';
+import { Header } from '@/components/layout/Header';
 import { learnTopics } from '@/features/learn/data';
 import { exampleService } from '@/features/examples/services/example-service';
 
@@ -50,7 +50,7 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <HomeHeader />
+      <Header />
 
       <main className="flex-1 flex flex-col items-center px-4 py-16 md:py-24 bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-neutral-900">
         {/* Hero Section */}

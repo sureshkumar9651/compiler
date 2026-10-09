@@ -51,7 +51,7 @@ export function PlaygroundHeader() {
   };
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-2 sm:px-4 dark:border-neutral-800 dark:bg-neutral-950 overflow-x-auto no-scrollbar">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-2 sm:px-4 dark:border-neutral-800 dark:bg-neutral-950">
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <button 
           onClick={() => usePlaygroundStore.getState().toggleSidebar()}

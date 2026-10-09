@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TerminalSquare, Menu, X } from 'lucide-react';
 
-export function HomeHeader() {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function HomeHeader() {
   }, [isMenuOpen]);
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 relative">
+    <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-40">
       <div className="flex items-center gap-2">
         <TerminalSquare className="h-6 w-6 text-blue-500 shrink-0" />
         <span className="font-bold text-xl tracking-tight text-neutral-900 dark:text-white">JS CodeLab</span>

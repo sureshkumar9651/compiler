@@ -13,7 +13,7 @@ export function RunButton({ onRun, isRunning = false }: RunButtonProps) {
       onClick={onRun}
       disabled={isRunning}
       title="Run Code (Ctrl+Enter)"
-      className={`group relative flex items-center gap-2 rounded-md px-4 py-1.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-neutral-900 ${
+      className={`group relative flex items-center justify-center gap-2 rounded-md py-1.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-neutral-900 w-[110px] ${
         isRunning
           ? 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 cursor-not-allowed'
           : 'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700'
@@ -27,7 +27,7 @@ export function RunButton({ onRun, isRunning = false }: RunButtonProps) {
       <span>{isRunning ? 'Running...' : 'Run'}</span>
       
       {/* Tooltip hint for keyboard shortcut */}
-      <span className="hidden group-hover:flex absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-neutral-800 text-neutral-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+      <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-neutral-800 text-neutral-200 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-50">
         Ctrl + Enter
       </span>
     </button>
