@@ -1,21 +1,48 @@
 import Link from 'next/link';
 import { ArrowRight, Zap, Code2, BookOpen } from 'lucide-react';
 import { HomeHeader } from '@/components/layout/HomeHeader';
+import { learnTopics } from '@/features/learn/data';
+import { exampleService } from '@/features/examples/services/example-service';
 
 export default function LandingPage() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "JS CodeLab",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Any",
-    "description": "A free browser-based JavaScript compiler and playground. Write, run, test, and learn JavaScript online instantly.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
+  const popularExamples = exampleService.getAllExamples().slice(0, 6);
+  const topTopics = learnTopics.slice(0, 6);
+
+  const faqItems = [
+    { question: "Is JS CodeLab free?", answer: "Yes, JS CodeLab is a 100% free online JavaScript playground." },
+    { question: "Does JS CodeLab require installation?", answer: "No installation is required. JS CodeLab runs entirely within your web browser using client-side Web Workers for execution." },
+    { question: "Can I test modern JavaScript features?", answer: "Absolutely. You can write and test modern ECMAScript features including async/await, arrow functions, and destructuring." }
+  ];
+
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "JS CodeLab",
+      "url": "https://jscodelab-js.vercel.app",
+      "sameAs": "https://github.com/sureshkumar9651/compiler",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "description": "A free browser-based JavaScript compiler and playground. Write, run, test, and learn JavaScript online instantly.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqItems.map(item => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
     }
-  };
+  ];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -76,6 +103,64 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Popular Examples Section */}
+        <section className="max-w-6xl w-full text-left mb-24 px-4">
+          <div className="flex justify-between items-end mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">Popular Examples</h2>
+              <p className="text-neutral-600 dark:text-neutral-400">Jump right into code with these runnable snippets.</p>
+            </div>
+            <Link href="/examples" className="text-blue-600 dark:text-blue-400 hover:underline font-medium flex items-center gap-1">
+              View all <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {popularExamples.map(example => (
+              <Link 
+                key={example.id} 
+                href={`/examples/${example.id}`}
+                className="group p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-blue-500 dark:hover:border-blue-500 transition-colors shadow-sm"
+              >
+                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {example.title}
+                </h3>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
+                  {example.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Learn Section */}
+        <section className="max-w-6xl w-full text-left mb-24 px-4">
+          <div className="flex justify-between items-end mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">Learn JavaScript</h2>
+              <p className="text-neutral-600 dark:text-neutral-400">Master the fundamentals with interactive guides.</p>
+            </div>
+            <Link href="/learn" className="text-purple-600 dark:text-purple-400 hover:underline font-medium flex items-center gap-1">
+              View all <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {topTopics.map(topic => (
+              <Link 
+                key={topic.id} 
+                href={`/learn/${topic.id}`}
+                className="group p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-purple-500 dark:hover:border-purple-500 transition-colors shadow-sm"
+              >
+                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  {topic.title}
+                </h3>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
+                  {topic.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* Content Section for AI & Search */}
         <section className="max-w-4xl w-full text-left space-y-16 mb-16 px-4">
           <div className="space-y-4">
@@ -111,18 +196,12 @@ export default function LandingPage() {
           <div className="space-y-4">
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Frequently Asked Questions</h2>
             <div className="space-y-6 mt-6">
-              <div>
-                <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">Is JS CodeLab free?</h3>
-                <p className="text-neutral-600 dark:text-neutral-400">Yes, JS CodeLab is a 100% free online JavaScript playground.</p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">Does JS CodeLab require installation?</h3>
-                <p className="text-neutral-600 dark:text-neutral-400">No installation is required. JS CodeLab runs entirely within your web browser using client-side Web Workers for execution.</p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">Can I test modern JavaScript features?</h3>
-                <p className="text-neutral-600 dark:text-neutral-400">Absolutely. You can write and test modern ECMAScript features including async/await, arrow functions, and destructuring.</p>
-              </div>
+              {faqItems.map((item, i) => (
+                <div key={i}>
+                  <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">{item.question}</h3>
+                  <p className="text-neutral-600 dark:text-neutral-400">{item.answer}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

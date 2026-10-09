@@ -80,11 +80,28 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
     ]
   };
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": example.title,
+    "description": example.description,
+    "datePublished": example.datePublished || "2026-10-09T00:00:00Z",
+    "dateModified": example.dateModified || "2026-10-09T00:00:00Z",
+    "author": {
+      "@type": "Organization",
+      "name": "JS CodeLab"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "JS CodeLab"
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([structuredData, articleSchema]) }}
       />
       <header className="flex flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2">
