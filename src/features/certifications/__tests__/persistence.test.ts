@@ -95,7 +95,7 @@ describe('IndexedDBCertificateRepository', () => {
       passed: false,
       totalQuestions: 10,
       correctAnswers: 7,
-      answers: { q1: 0 },
+      answers: { q1: 'opt-1' },
       timestamp: Date.now(),
     };
 

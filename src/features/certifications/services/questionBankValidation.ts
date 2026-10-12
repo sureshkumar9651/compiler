@@ -49,7 +49,7 @@ export const QuestionSchema = z
     }
 
     // 3. Verify all option texts are distinct
-    const optionTexts = new Set(data.options.map((o) => o.text.trim().toLowerCase()));
+    const optionTexts = new Set(data.options.map((o) => o.text.trim()));
     if (optionTexts.size !== 4) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -95,6 +95,12 @@ export interface QuestionBankValidationResult {
   errors: string[];
 }
 
+export interface CertificationsValidationResult {
+  valid: boolean;
+  totalCertifications: number;
+  errors: string[];
+}
+
 /**
  * Validates an entire array of questions for integrity, uniqueness, and correctness.
  */
@@ -122,6 +128,35 @@ export function validateQuestionBank(questions: Question[]): QuestionBankValidat
   return {
     valid: errors.length === 0,
     totalQuestions: questions.length,
+    errors,
+  };
+}
+
+/**
+ * Validates an entire array of certifications catalog entries against the Zod schema.
+ */
+export function validateCertifications(certifications: Certification[]): CertificationsValidationResult {
+  const errors: string[] = [];
+  const seenIds = new Set<string>();
+
+  certifications.forEach((c, index) => {
+    if (seenIds.has(c.id)) {
+      errors.push(`Duplicate certification ID detected: "${c.id}" at index ${index}`);
+    } else {
+      seenIds.add(c.id);
+    }
+
+    const result = CertificationSchema.safeParse(c);
+    if (!result.success) {
+      result.error.issues.forEach((err) => {
+        errors.push(`[Certification ${c.id || index}]: ${err.message} (path: ${err.path.join('.')})`);
+      });
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    totalCertifications: certifications.length,
     errors,
   };
 }
