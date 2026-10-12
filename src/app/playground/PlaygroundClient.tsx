@@ -123,15 +123,15 @@ export function PlaygroundClient() {
 
   if (!mounted || isLoading || isMobile === null) {
     return (
-      <div className="flex h-[700px] w-full flex-col bg-white dark:bg-neutral-950 items-center justify-center border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-inner my-2">
+      <div className="flex h-screen w-full flex-col bg-white dark:bg-neutral-950 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
-        <p className="text-neutral-500 dark:text-neutral-400 font-medium">Initializing Monaco Editor &amp; Local Sandbox...</p>
+        <p className="text-neutral-500 dark:text-neutral-400 font-medium">Loading projects...</p>
       </div>
     );
   }
 
   return (
-    <div className={`flex h-[750px] w-full flex-col bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm overflow-hidden my-4 ${isFullscreen ? '!fixed !inset-0 !z-50 !h-screen !rounded-none !border-none !my-0' : ''}`}>
+    <div className={`flex h-screen w-full flex-col bg-white dark:bg-neutral-950 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
       {!isFullscreen && <PlaygroundHeader />}
       
       <ErrorBoundary>
