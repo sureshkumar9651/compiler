@@ -4,14 +4,14 @@ import { Footer } from '@/components/layout/Footer';
 import { CertificationsClient } from '@/features/certifications/components/CertificationsClient';
 
 export const metadata: Metadata = {
-  title: 'Get Certified in JavaScript & React | JS CodeLab',
-  description: 'Test your knowledge and earn downloadable certifications in JavaScript Fundamentals and React JS. Interactive browser-based assessments with instant verification.',
+  title: 'Professional Technology Certifications | JS CodeLab',
+  description: 'Validate real-world software engineering mastery across programming languages, frontend, backend, databases, DevOps, testing, and system architecture. Interactive assessments with downloadable PDF credentials.',
   alternates: {
     canonical: '/certifications',
   },
   openGraph: {
-    title: 'Get Certified in JavaScript & React | JS CodeLab',
-    description: 'Test your knowledge and earn downloadable certifications in JavaScript Fundamentals and React JS.',
+    title: 'Professional Technology Certifications | JS CodeLab',
+    description: 'Validate real-world engineering mastery across 7 technology domains with interactive browser-based assessments and verifiable PDF credentials.',
     url: '/certifications',
     siteName: 'JS CodeLab',
     locale: 'en_US',
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Get Certified in JavaScript & React | JS CodeLab',
-    description: 'Test your knowledge and earn downloadable certifications in JavaScript and React.',
+    title: 'Professional Technology Certifications | JS CodeLab',
+    description: 'Validate real-world engineering mastery across 7 technology domains with verifiable PDF credentials.',
   },
 };
 

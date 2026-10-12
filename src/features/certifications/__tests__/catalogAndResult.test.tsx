@@ -3,8 +3,9 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CertificationCard } from '../components/CertificationCard';
 import { AssessmentResult } from '../components/AssessmentResult';
-import { CERTIFICATIONS } from '../data/certificationsData';
-import { Certificate, AssessmentAttempt, Question } from '../types';
+import { CERTIFICATIONS, ASSESSMENT_QUESTIONS } from '../data/certificationsData';
+import { Certificate, AssessmentAttempt, Question, Certification } from '../types';
+import { prepareAssessmentQuestions, calculateAssessmentScore } from '../services/assessmentEngine';
 
 describe('Catalog & Result UI Components', () => {
   const dummyCert = CERTIFICATIONS.find((c) => c.id === 'javascript-fundamentals')!;
@@ -52,7 +53,7 @@ describe('Catalog & Result UI Components', () => {
     certificateId: dummyCertificate.id,
   };
 
-  it('renders certification card with category, difficulty, duration, question count, and skills tags', () => {
+  it('renders available certification card with Start Assessment primary button and NO Coming Soon badge', () => {
     const html = renderToStaticMarkup(
       <CertificationCard
         certification={dummyCert}
@@ -68,20 +69,63 @@ describe('Catalog & Result UI Components', () => {
     expect(html).toContain('10 MCQs');
     expect(html).toContain('Start Assessment');
     expect(html).toContain('Event Loop &amp; Microtasks');
+
+    // Must NOT contain Coming Soon or notification elements
+    expect(html).not.toContain('Coming Soon');
+    expect(html).not.toContain('Notify When Live');
+    expect(html).not.toContain('In Development');
   });
 
-  it('renders coming soon status on tracks in development and disables start button', () => {
-    const comingSoonCert = CERTIFICATIONS.find((c) => c.status === 'coming_soon')!;
+  it('renders incomplete certifications honestly with disabled Assessment in Development button', () => {
+    const inDevCert: Certification = {
+      ...dummyCert,
+      id: 'mock-in-dev-track',
+      title: 'Quantum Computing Algorithms',
+      status: 'coming_soon',
+    };
     const html = renderToStaticMarkup(
       <CertificationCard
-        certification={comingSoonCert}
+        certification={inDevCert}
         onStartAssessment={() => {}}
       />
     );
 
-    expect(html).toContain('Coming Soon');
-    expect(html).toContain('Question Bank in Verification');
+    expect(html).toContain('In Development');
+    expect(html).toContain('Assessment in Development');
     expect(html).toContain('disabled');
+    expect(html).not.toContain('Coming Soon');
+    expect(html).not.toContain('Notify When Live');
+    expect(html).not.toContain('Start Assessment');
+  });
+
+  it('ensures every enabled certification has 10 verified questions and is ready to start', () => {
+    const readyCerts = CERTIFICATIONS.filter((c) => c.status === 'available');
+    expect(readyCerts.length).toBe(50);
+
+    readyCerts.forEach((cert) => {
+      const questions = ASSESSMENT_QUESTIONS.filter((q) => q.certificationId === cert.id);
+      expect(questions.length).toBe(10);
+
+      // Verify that questions can be prepared and randomized
+      const prepared = prepareAssessmentQuestions(questions, { totalQuestions: cert.totalQuestions });
+      expect(prepared.length).toBe(10);
+
+      // Verify that options are shuffled but correctOptionId is preserved
+      prepared.forEach((pq) => {
+        expect(pq.shuffledOptions.length).toBe(4);
+        const optionIds = pq.shuffledOptions.map((o) => o.id);
+        expect(optionIds).toContain(pq.correctOptionId);
+      });
+
+      // Verify grading
+      const allCorrectAnswers: Record<string, string> = {};
+      prepared.forEach((q) => {
+        allCorrectAnswers[q.id] = q.correctOptionId;
+      });
+      const score = calculateAssessmentScore(prepared, allCorrectAnswers, cert.passingScore);
+      expect(score.score).toBe(100);
+      expect(score.passed).toBe(true);
+    });
   });
 
   it('renders AssessmentResult with primary PDF download action and NO HTML certificate preview', () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { CERTIFICATIONS, CERTIFICATION_CATEGORIES, ASSESSMENT_QUESTIONS } from '../data/certificationsData';
 import { Certification, Certificate, AssessmentAttempt, ShuffledQuestion, CertificationCategory, CertificationDifficulty } from '../types';
 import { certificateRepository } from '../persistence/IndexedDBCertificateRepository';
@@ -10,7 +10,7 @@ import { LearnerNameModal } from './LearnerNameModal';
 import { AssessmentRunner } from './AssessmentRunner';
 import { AssessmentResult } from './AssessmentResult';
 import { CertificateVerification } from './CertificateVerification';
-import { Award, ShieldCheck, Info, Search, Filter, X, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Award, ShieldCheck, Info, Search, Filter, X, Sparkles, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 
 export function CertificationsClient() {
   const [activeTab, setActiveTab] = useState<'certifications' | 'verify'>('certifications');
@@ -21,6 +21,7 @@ export function CertificationsClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<'all' | 'available' | 'coming_soon'>('all');
 
   // Active Flow State
   const [modalCert, setModalCert] = useState<Certification | null>(null);
@@ -48,12 +49,60 @@ export function CertificationsClient() {
     }
   };
 
+  // URL state synchronization and direct-link handling
   useEffect(() => {
     loadCertificates();
+
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const trackId = params.get('cert') || params.get('track');
+      if (trackId) {
+        const matched = CERTIFICATIONS.find((c) => c.id === trackId);
+        // Only open directly if the certification is ready and has questions
+        if (matched && matched.status === 'available') {
+          const hasQuestions = ASSESSMENT_QUESTIONS.some((q) => q.certificationId === matched.id);
+          if (hasQuestions) {
+            setModalCert(matched);
+          }
+        }
+      }
+
+      const handlePopState = () => {
+        const curParams = new URLSearchParams(window.location.search);
+        const curTrack = curParams.get('cert') || curParams.get('track');
+        if (!curTrack) {
+          setModalCert(null);
+        }
+      };
+
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
   }, []);
 
   const handleStartAssessmentClick = (cert: Certification) => {
+    // Only open for ready certifications with questions
+    if (cert.status !== 'available') return;
+    const hasQuestions = ASSESSMENT_QUESTIONS.some((q) => q.certificationId === cert.id);
+    if (!hasQuestions) return;
+
     setModalCert(cert);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('cert', cert.id);
+      window.history.pushState({ certId: cert.id }, '', url.toString());
+    }
+  };
+
+  const handleCloseNameModal = () => {
+    setModalCert(null);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('cert');
+      url.searchParams.delete('track');
+      const cleanUrl = url.pathname + (url.search ? url.search : '');
+      window.history.pushState(null, '', cleanUrl);
+    }
   };
 
   const handleConfirmLearnerName = (name: string) => {
@@ -63,6 +112,11 @@ export function CertificationsClient() {
 
     // Prepare randomized assessment questions with independent option shuffling
     const matchingPool = ASSESSMENT_QUESTIONS.filter((q) => q.certificationId === cert.id);
+    if (matchingPool.length === 0) {
+      console.error(`Cannot start assessment: no verified question bank found for ${cert.id}`);
+      return;
+    }
+
     const preparedQuestions = prepareAssessmentQuestions(matchingPool, {
       totalQuestions: cert.totalQuestions,
     });
@@ -90,9 +144,17 @@ export function CertificationsClient() {
     }
   };
 
+  const availableCount = useMemo(() => CERTIFICATIONS.filter((c) => c.status === 'available').length, []);
+  const inDevelopmentCount = useMemo(() => CERTIFICATIONS.filter((c) => c.status !== 'available').length, []);
+
   // Filtered certifications list
   const filteredCertifications = useMemo(() => {
     return CERTIFICATIONS.filter((cert) => {
+      // Status filter
+      if (selectedStatus !== 'all' && cert.status !== selectedStatus) {
+        return false;
+      }
+
       // Category filter
       if (selectedCategory !== 'all' && cert.category !== selectedCategory) {
         return false;
@@ -119,7 +181,7 @@ export function CertificationsClient() {
 
       return true;
     });
-  }, [searchQuery, selectedCategory, selectedDifficulty]);
+  }, [searchQuery, selectedCategory, selectedDifficulty, selectedStatus]);
 
   // Active Assessment Full Screen Flow
   if (activeAssessment) {
@@ -170,7 +232,7 @@ export function CertificationsClient() {
       {modalCert && (
         <LearnerNameModal
           certification={modalCert}
-          onClose={() => setModalCert(null)}
+          onClose={handleCloseNameModal}
           onConfirm={handleConfirmLearnerName}
         />
       )}
@@ -275,6 +337,58 @@ export function CertificationsClient() {
               </div>
             </div>
 
+            {/* Status Filter Row */}
+            <div className="flex items-center justify-between gap-3 flex-wrap pt-0.5">
+              <div className="inline-flex p-1 rounded-2xl bg-neutral-100 dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-800 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatus('all')}
+                  className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                    selectedStatus === 'all'
+                      ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white shadow-xs'
+                      : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
+                  }`}
+                >
+                  <span>All Tracks</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300">
+                    {CERTIFICATIONS.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatus('available')}
+                  className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                    selectedStatus === 'available'
+                      ? 'bg-white dark:bg-neutral-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                      : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Ready to Start</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                    {availableCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedStatus('coming_soon')}
+                  className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                    selectedStatus === 'coming_soon'
+                      ? 'bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 shadow-xs'
+                      : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
+                  }`}
+                >
+                  <Clock className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>In Development</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300">
+                    {inDevelopmentCount}
+                  </span>
+                </button>
+              </div>
+            </div>
+
             {/* Category Pills Bar */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
               {CERTIFICATION_CATEGORIES.map((cat) => {
@@ -300,14 +414,20 @@ export function CertificationsClient() {
             <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 px-1 pt-1">
               <span>
                 Showing {filteredCertifications.length} of {CERTIFICATIONS.length} certification tracks
+                {selectedStatus !== 'all' && (
+                  <span className="ml-1 font-semibold text-neutral-700 dark:text-neutral-300">
+                    ({selectedStatus === 'available' ? 'Ready to Start' : 'In Development'})
+                  </span>
+                )}
               </span>
-              {(searchQuery || selectedCategory !== 'all' || selectedDifficulty !== 'all') && (
+              {(searchQuery || selectedCategory !== 'all' || selectedDifficulty !== 'all' || selectedStatus !== 'all') && (
                 <button
                   type="button"
                   onClick={() => {
                     setSearchQuery('');
                     setSelectedCategory('all');
                     setSelectedDifficulty('all');
+                    setSelectedStatus('all');
                   }}
                   className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                 >

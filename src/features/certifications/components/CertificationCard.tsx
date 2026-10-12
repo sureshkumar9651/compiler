@@ -25,6 +25,9 @@ import {
   Shield,
   Bot,
   Binary,
+  Sparkles,
+  FlaskConical,
+  Cloud,
 } from 'lucide-react';
 import { downloadCertificatePdf } from '../services/pdfCertificateService';
 
@@ -50,19 +53,40 @@ function getTechIcon(iconName: string) {
       return { icon: Server, color: 'text-green-500 bg-green-50 dark:bg-green-950/50' };
     case 'sql':
     case 'database':
+    case 'mysql':
+    case 'postgresql':
+    case 'mongodb':
+    case 'redis':
       return { icon: Database, color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/50' };
     case 'docker':
       return { icon: Boxes, color: 'text-sky-500 bg-sky-50 dark:bg-sky-950/50' };
     case 'git':
       return { icon: GitBranch, color: 'text-orange-500 bg-orange-50 dark:bg-orange-950/50' };
     case 'system-design':
+    case 'systemdesign':
       return { icon: Network, color: 'text-purple-500 bg-purple-50 dark:bg-purple-950/50' };
     case 'security':
+    case 'cybersecurity':
       return { icon: Shield, color: 'text-red-500 bg-red-50 dark:bg-red-950/50' };
     case 'ai':
       return { icon: Bot, color: 'text-violet-500 bg-violet-50 dark:bg-violet-950/50' };
     case 'dsa':
       return { icon: Binary, color: 'text-teal-500 bg-teal-50 dark:bg-teal-950/50' };
+    case 'cloud':
+    case 'aws':
+    case 'azure':
+    case 'gcp':
+      return { icon: Cloud, color: 'text-sky-500 bg-sky-50 dark:bg-sky-950/50' };
+    case 'testing':
+    case 'jest':
+    case 'vitest':
+    case 'playwright':
+      return { icon: FlaskConical, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50' };
+    case 'sparkles':
+      return { icon: Sparkles, color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/50' };
+    case 'patterns':
+    case 'oop':
+      return { icon: Layers, color: 'text-purple-500 bg-purple-50 dark:bg-purple-950/50' };
     default:
       return { icon: Cpu, color: 'text-blue-500 bg-blue-50 dark:bg-blue-950/50' };
   }
@@ -123,8 +147,8 @@ export function CertificationCard({
                   </span>
                 )}
                 {!isAvailable && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60">
-                    Coming Soon
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
+                    In Development
                   </span>
                 )}
               </div>
@@ -242,8 +266,10 @@ export function CertificationCard({
             type="button"
             disabled
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 font-medium text-xs sm:text-sm cursor-not-allowed border border-neutral-200 dark:border-neutral-800"
+            aria-label={`Assessment for ${certification.title} is currently in development`}
           >
-            <span>Question Bank in Verification</span>
+            <Clock className="h-3.5 w-3.5 text-neutral-400" />
+            <span>Assessment in Development</span>
           </button>
         )}
 
