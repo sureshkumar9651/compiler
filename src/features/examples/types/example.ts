@@ -24,6 +24,7 @@ export interface CodeExample {
   faq?: { question: string; answer: string }[];
   relatedSlugs?: string[];
   learnGuideSlug?: string;
+  seoTitle?: string;
   seoDescription?: string;
   datePublished?: string;
   dateModified?: string;

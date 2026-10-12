@@ -1,0 +1,92 @@
+<!-- Note: While the /llms-full.txt standard is an emerging convention for LLM context ingestion, widespread crawler adoption remains experimental/unproven across search engines. -->
+# JS CodeLab — Complete LLM Resource Map
+
+> JS CodeLab is a free, privacy-first in-browser JavaScript compiler, interactive playground, and developer certification platform. It evaluates JavaScript code locally in browser Web Workers without server roundtrips, accounts, or telemetry.
+
+Website: https://jscodelab-js.vercel.app
+Repository: https://github.com/sureshkumar9651/compiler
+License: Open Source (MIT)
+
+---
+
+## 1. Core Architecture & Philosophy
+
+JS CodeLab operates under a strictly local-first engineering philosophy:
+1. **Isolated Client Execution**: Code is evaluated entirely inside browser-native Web Workers. No server containerization, no queuing delays, and zero network data transmission of user code.
+2. **Offline-Capable Persistence**: User scripts, scratchpads, and project trees are stored locally on the client device using browser IndexedDB.
+3. **Monaco Editor Integration**: Developers receive first-class VS Code editing features: syntax validation, TypeScript definitions, bracket matching, and format-on-save.
+4. **Professional Certifications**: A 50-track technical assessment suite with randomized question order, strict anti-cheat event detection, and PDF certificates with verification IDs.
+
+---
+
+## 2. All Educational Guides & Tutorials (/learn)
+
+- **Variables (let vs const)**: https://jscodelab-js.vercel.app/learn/variables
+  Declarations, immutability, reassignment rules, and why `var` is discouraged in modern ES6+ code.
+- **JavaScript Functions**: https://jscodelab-js.vercel.app/learn/functions
+  Function declarations, expressions, arrow functions, implicit returns, and lexical scoping.
+- **JavaScript Arrays**: https://jscodelab-js.vercel.app/learn/arrays
+  Array indexing, iteration patterns, and core transformation utilities (map, filter, reduce).
+- **Promises & Async/Await**: https://jscodelab-js.vercel.app/learn/promises
+  Asynchronous execution, the microtask queue, Promise lifecycle (pending, fulfilled, rejected), and async/await syntax.
+- **Understanding Closures**: https://jscodelab-js.vercel.app/learn/closures
+  Lexical environments, persistent state retention, encapsulation of private variables, and factory functions.
+- **Array Map vs forEach**: https://jscodelab-js.vercel.app/learn/map-vs-foreach
+  Comparative analysis of transformation vs iteration, immutable array creation, and performance implications.
+- **Destructuring**: https://jscodelab-js.vercel.app/learn/destructuring
+  Unpacking objects and arrays, default fallback values, and nested property extraction.
+- **Spread & Rest Operators**: https://jscodelab-js.vercel.app/learn/spread-rest
+  Shallow cloning, array concatenation, variable argument gathering, and function parameter handling.
+- **Template Literals**: https://jscodelab-js.vercel.app/learn/template-literals
+  Backtick strings, multiline strings, embedded expressions, and tagged template functions.
+- **Scope & Hoisting**: https://jscodelab-js.vercel.app/learn/scope-and-hoisting
+  Global, function, and block scope hierarchies, variable hoisting mechanics, and the Temporal Dead Zone (TDZ).
+- **Error Handling (try/catch)**: https://jscodelab-js.vercel.app/learn/error-handling
+  Runtime error management, throw statements, error objects, and finally blocks.
+- **Array reduce() Method**: https://jscodelab-js.vercel.app/learn/array-reduce
+  Accumulator mechanics, grouping data, flattening arrays, and functional pipeline synthesis.
+- **The 'this' Keyword**: https://jscodelab-js.vercel.app/learn/this-keyword
+  Dynamic invocation context, explicit binding (call, apply, bind), and arrow function lexical this.
+- **JavaScript Objects**: https://jscodelab-js.vercel.app/learn/objects
+  Key-value structures, object methods, property accessors, prototype inheritance, and Object utilities.
+
+---
+
+## 3. Selected Runnable Code Examples (/examples)
+
+- **Hello World**: https://jscodelab-js.vercel.app/examples/hello-world
+- **Variables**: https://jscodelab-js.vercel.app/examples/variables
+- **Template Literals**: https://jscodelab-js.vercel.app/examples/template-literals
+- **Conditional Statements**: https://jscodelab-js.vercel.app/examples/conditional-statements
+- **Basic Functions**: https://jscodelab-js.vercel.app/examples/basic-function
+- **Arrow Functions**: https://jscodelab-js.vercel.app/examples/arrow-function
+- **Default Parameters**: https://jscodelab-js.vercel.app/examples/default-parameters
+- **Array map()**: https://jscodelab-js.vercel.app/examples/array-map
+- **Array filter()**: https://jscodelab-js.vercel.app/examples/array-filter
+- **Array reduce()**: https://jscodelab-js.vercel.app/examples/array-reduce
+- **Array find()**: https://jscodelab-js.vercel.app/examples/array-find
+- **Promise Basics**: https://jscodelab-js.vercel.app/examples/promise-basic
+- **Async / Await**: https://jscodelab-js.vercel.app/examples/async-await
+- **setTimeout**: https://jscodelab-js.vercel.app/examples/set-timeout
+- **Try / Catch**: https://jscodelab-js.vercel.app/examples/try-catch
+- **Throw Error**: https://jscodelab-js.vercel.app/examples/throw-error
+- **Object Basics**: https://jscodelab-js.vercel.app/examples/object-basics
+- **Object Destructuring**: https://jscodelab-js.vercel.app/examples/object-destructuring
+- **Object Spread**: https://jscodelab-js.vercel.app/examples/object-spread
+- **Optional Chaining**: https://jscodelab-js.vercel.app/examples/optional-chaining
+- **Reverse String Algorithm**: https://jscodelab-js.vercel.app/examples/reverse-string
+- **Palindrome Checker**: https://jscodelab-js.vercel.app/examples/palindrome
+- **FizzBuzz**: https://jscodelab-js.vercel.app/examples/fizzbuzz
+- **Factorial**: https://jscodelab-js.vercel.app/examples/factorial
+
+---
+
+## 4. Technology Certification Domains (/certifications)
+
+1. **Programming Languages**: JavaScript, TypeScript, Python, Java 21, Go, C# 12, C++20/23, PHP 8+.
+2. **Frontend Engineering**: React.js, Next.js, HTML5, CSS3, Web Performance, Tailwind CSS, Web Accessibility (WCAG 2.2).
+3. **Backend Engineering**: Node.js, Express.js, REST APIs, Auth/Identity (OAuth2/OIDC), GraphQL Architecture, API Security.
+4. **Databases**: SQL, PostgreSQL, MongoDB, Redis, MySQL, Database Design & Optimization.
+5. **DevOps & Cloud**: Docker, Git, Kubernetes, Linux Administration, CI/CD Pipelines, AWS, Azure, Google Cloud Platform.
+6. **Testing & Software Quality**: Jest, Playwright, Vitest, React Testing Library, Cypress, Unit Testing Architecture, Integration/E2E Testing.
+7. **Architecture & Computer Science**: Distributed System Design, Data Structures & Algorithms, Cybersecurity Fundamentals, Design Patterns, Generative AI Fundamentals, Clean Code & Refactoring, Object-Oriented Programming, Machine Learning Fundamentals.

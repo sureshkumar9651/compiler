@@ -1,20 +1,38 @@
+<!-- Note: While the /llms.txt standard is an emerging convention for LLM context ingestion, widespread crawler adoption remains experimental/unproven across search engines. -->
 # JS CodeLab
-JS CodeLab is a free online JavaScript compiler and playground. It allows developers to write, run, test, and learn JavaScript directly in their browser without requiring any installation or user accounts.
 
-It features a professional-grade editor powered by Monaco, secure local execution using Web Workers, and offline project storage using IndexedDB. All code remains strictly on the user's device.
+> JS CodeLab is a free, privacy-first in-browser JavaScript compiler, interactive playground, and developer certification platform. It evaluates JavaScript code locally in browser Web Workers without server roundtrips, accounts, or telemetry.
 
-## Key Resources
-- **Home**: https://jscodelab-js.vercel.app/
-- **Playground**: https://jscodelab-js.vercel.app/playground
-- **Examples**: https://jscodelab-js.vercel.app/examples
-- **Learn Guides**: https://jscodelab-js.vercel.app/learn
-- **About**: https://jscodelab-js.vercel.app/about
-- **Privacy Policy**: https://jscodelab-js.vercel.app/privacy
-- **GitHub Repository**: https://github.com/sureshkumar9651/compiler
+Website: https://jscodelab-js.vercel.app
+Repository: https://github.com/sureshkumar9651/compiler
+License: Open Source (MIT)
 
-## Technical Architecture
-- **Framework**: Next.js (App Router)
-- **Editor**: Monaco Editor (@monaco-editor/react)
-- **Execution**: Client-side Web Workers
-- **Styling**: Tailwind CSS
-- **Data Storage**: IndexedDB (idb package)
+## Core Capabilities
+- **Online JavaScript Compiler**: Instant browser-native code execution using dedicated Web Workers.
+- **Monaco Code Editor**: VS Code-powered editing experience with IntelliSense, formatting, and syntax validation.
+- **Offline Project Persistence**: Snippets and multi-file workspaces saved locally in browser IndexedDB.
+- **Technology Certifications**: 50 rigorous technical assessment tracks with verifiable PDF credentials.
+- **Zero-Server Privacy Guarantee**: Source code never leaves the user device.
+
+## Key Sections & Resources
+- [JavaScript Playground](https://jscodelab-js.vercel.app/playground): Real-time code execution environment with console output and error diagnostics.
+- [JavaScript Examples](https://jscodelab-js.vercel.app/examples): 25+ runnable examples covering async/await, closures, array methods, and algorithms.
+- [Learn JavaScript Tutorials](https://jscodelab-js.vercel.app/learn): Interactive guides with runnable code on closures, promises, event loop, and scopes.
+- [Technology Certifications](https://jscodelab-js.vercel.app/certifications): 50 engineering tracks across languages, frontend, backend, databases, DevOps, and testing.
+- [Verify Credential](https://jscodelab-js.vercel.app/certifications/verify): Cryptographic credential verification for issued certificates.
+- [About JS CodeLab](https://jscodelab-js.vercel.app/about): Architecture overview, engineering mission, and open-source documentation.
+- [Privacy Policy](https://jscodelab-js.vercel.app/privacy): Plain-language declaration of local-first execution and zero data collection.
+
+## Top Tutorials (/learn)
+- [JavaScript Closures](https://jscodelab-js.vercel.app/learn/closures): How lexical scoping, state retention, and private variables work in JavaScript.
+- [Promises & Async/Await](https://jscodelab-js.vercel.app/learn/promises): Asynchronous control flow, microtasks, Promise chaining, and try/catch error handling.
+- [Array Map vs forEach](https://jscodelab-js.vercel.app/learn/map-vs-foreach): Differences in mutation, return values, side effects, and performance.
+- [Scope & Hoisting](https://jscodelab-js.vercel.app/learn/scope-and-hoisting): Global, function, and block scoping with the Temporal Dead Zone (TDZ).
+- [The 'this' Keyword](https://jscodelab-js.vercel.app/learn/this-keyword): Execution contexts, call/apply/bind, and lexical `this` in arrow functions.
+
+## Technical Specifications
+- Runtime: Pure client-side JavaScript execution via Web Workers (ES2024+ compatible).
+- Framework: Next.js (App Router), React 19, TypeScript.
+- Editor: @monaco-editor/react.
+- Storage: IndexedDB via idb.
+- Output: Intercepted console.log/info/warn/error streams.

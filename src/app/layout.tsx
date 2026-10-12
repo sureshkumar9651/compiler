@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -18,20 +18,42 @@ const geistMono = Geist_Mono({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app';
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Free Online JavaScript Compiler & Playground | JS CodeLab",
-    template: "%s | JS CodeLab"
+    template: "%s | JS CodeLab",
   },
-  description: "Write, run, test, and learn JavaScript online with JS CodeLab — a free browser-based JavaScript compiler and playground with examples and developer-friendly tools.",
+  description:
+    "Write, run, test, and debug JavaScript online with JS CodeLab — a fast, free browser-based JavaScript compiler, interactive playground, and code sandbox.",
   applicationName: "JS CodeLab",
-  authors: [{ name: "JS CodeLab" }],
+  authors: [{ name: "JS CodeLab", url: SITE_URL }],
   creator: "JS CodeLab",
   publisher: "JS CodeLab",
   alternates: {
     canonical: '/',
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  manifest: '/manifest.webmanifest',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -45,7 +67,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Free Online JavaScript Compiler & Playground | JS CodeLab",
-    description: "Write, run, test, and learn JavaScript online with JS CodeLab — a free browser-based JavaScript compiler and playground.",
+    description:
+      "Write, run, test, and debug JavaScript online with JS CodeLab — a fast, free browser-based JavaScript compiler, interactive playground, and code sandbox.",
     url: SITE_URL,
     siteName: "JS CodeLab",
     locale: 'en_US',
@@ -56,13 +79,14 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: 'JS CodeLab - Free Online JavaScript Compiler & Playground',
-      }
+      },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Free Online JavaScript Compiler & Playground | JS CodeLab",
-    description: "Write, run, test, and learn JavaScript online with JS CodeLab.",
+    description:
+      "Write, run, test, and debug JavaScript online with JS CodeLab — a fast, free browser-based JavaScript compiler, interactive playground, and code sandbox.",
     images: ['/og.png'],
   },
 };

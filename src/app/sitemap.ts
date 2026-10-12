@@ -3,66 +3,87 @@ import { exampleService } from '@/features/examples/services/example-service';
 import { learnTopics } from '@/features/learn/data';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://jscodelab-js.vercel.app';
+const LATEST_UPDATE = new Date('2026-10-12T00:00:00.000Z');
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const sitemapData: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'daily',
+      priority: 1.0,
     },
     {
       url: `${SITE_URL}/playground`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'daily',
       priority: 0.9,
     },
     {
+      url: `${SITE_URL}/certifications`,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/certifications/verify`,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${SITE_URL}/examples`,
-      lastModified: new Date(),
+      lastModified: LATEST_UPDATE,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/learn`,
-      lastModified: new Date(),
+      lastModified: LATEST_UPDATE,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
   ];
 
-  // Add Example pages
+  // Add Example and Template pages
   const examples = exampleService.getAllExamples();
   const templates = exampleService.getStarterTemplates();
   const allExamples = [...examples, ...templates];
 
-  allExamples.forEach(example => {
+  allExamples.forEach((example) => {
+    const lastModified = example.dateModified
+      ? new Date(example.dateModified)
+      : LATEST_UPDATE;
+
     sitemapData.push({
       url: `${SITE_URL}/examples/${example.id}`,
-      lastModified: new Date(),
+      lastModified,
       changeFrequency: 'monthly',
       priority: 0.7,
     });
   });
 
-  // Add Learn pages
-  learnTopics.forEach(topic => {
+  // Add Learn Topic pages
+  learnTopics.forEach((topic) => {
+    const lastModified = topic.dateModified
+      ? new Date(topic.dateModified)
+      : LATEST_UPDATE;
+
     sitemapData.push({
       url: `${SITE_URL}/learn/${topic.id}`,
-      lastModified: new Date(),
+      lastModified,
       changeFrequency: 'monthly',
       priority: 0.7,
     });

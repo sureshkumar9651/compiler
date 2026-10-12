@@ -5,18 +5,23 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | JS CodeLab',
-  description: 'Learn how JS CodeLab protects your privacy through local-first execution and IndexedDB storage.',
+  title: 'Privacy Policy — Local Execution & Zero Tracking',
+  description: 'Read how JS CodeLab ensures 100% privacy through local-first Web Worker execution and client-side IndexedDB storage. Your code never leaves your device.',
   alternates: {
     canonical: '/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy | JS CodeLab',
-    description: 'Learn how JS CodeLab protects your privacy through local-first execution and IndexedDB storage.',
+    title: 'Privacy Policy — Local Execution & Zero Data Collection',
+    description: 'Read how JS CodeLab ensures 100% privacy through local-first Web Worker execution and client-side IndexedDB storage. Your code never leaves your device.',
     url: '/privacy',
     siteName: 'JS CodeLab',
     locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy — Local Execution & Zero Data Collection',
+    description: 'Read how JS CodeLab ensures 100% privacy through local-first Web Worker execution and client-side IndexedDB storage.',
   },
 };
 

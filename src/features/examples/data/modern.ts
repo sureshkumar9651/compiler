@@ -3,31 +3,45 @@ import { CodeExample } from "../types/example";
 export const modernExamples: CodeExample[] = [
   {
     id: "optional-chaining",
-    title: "Optional Chaining & Nullish Coalescing",
-    description: "Safely access nested properties and provide fallback values.",
+    title: "JavaScript Optional Chaining & Nullish Coalescing",
+    seoTitle: "JavaScript Optional Chaining & Nullish Coalescing",
+    seoDescription:
+      "Safely traverse deep object trees with optional chaining (?.) and provide fallbacks with nullish coalescing (??). Test modern ES2020 JavaScript live.",
+    description:
+      "JavaScript optional chaining (?.) permits reading nested properties without manually checking each reference in the chain for null or undefined. Nullish coalescing (??) provides a fallback value only when a value is strictly null or undefined.",
     category: "modern-javascript",
     difficulty: "beginner",
-    tags: ["optional-chaining", "nullish", "es2020"],
+    tags: ["optional-chaining", "nullish-coalescing", "es2020", "modern-javascript"],
     explanation:
-      "The optional chaining operator (?.) enables you to read the value of a property located deep within a chain of connected objects without having to check that each reference in the chain is valid.",
-    expectedOutput:
-      "The nested value, or undefined if a parent property is missing.",
+      "Introduced in ECMAScript 2020, optional chaining (`?.`) short-circuits evaluation and evaluates to `undefined` if the preceding reference is nullish (`null` or `undefined`), avoiding runtime TypeError exceptions. Paired with the nullish coalescing operator (`??`), developers can supply clean default fallbacks only when a value is strictly nullish, preserving legitimate falsy values like `0`, `false`, and empty strings `\"\"`.",
+    expectedOutput: "Suresh\ndefault",
     commonMistakes: [
-      "Overusing optional chaining when a property is strictly required by the application.",
-      "Using ?. instead of a regular dot for top-level variables that might be undeclared.",
+      "Using the logical OR operator (||) instead of nullish coalescing (??), which erroneously overwrites valid falsy values like 0 or false.",
+      "Overusing optional chaining on references that should be strictly guaranteed by application invariants, hiding upstream data bugs.",
+      "Using ?. on root variables that are completely undeclared, which still throws a ReferenceError; optional chaining only guards properties.",
+      "Attempting to use optional chaining on the left side of an assignment expression (e.g. obj?.prop = val is a SyntaxError)."
     ],
     faq: [
       {
-        question: "Does optional chaining work with arrays and functions?",
-        answer: "Yes, you can use arr?.[0] and func?.() safely.",
+        question: "What is the difference between ?? (nullish coalescing) and || (logical OR)?",
+        answer:
+          "The ?? operator only falls back when the left operand is null or undefined. The || operator falls back on any falsy value, including 0, false, NaN, and empty strings ('')."
       },
+      {
+        question: "Can optional chaining be used with function calls and array indices?",
+        answer:
+          "Yes. You can call optional functions with callback?.() and access optional array elements with array?.[index] safely."
+      },
+      {
+        question: "Does optional chaining prevent ReferenceError on undeclared variables?",
+        answer:
+          "No. Optional chaining only protects property access on defined variables. Accessing an undeclared root variable still throws a ReferenceError."
+      }
     ],
-    relatedSlugs: ["object-basics"],
+    relatedSlugs: ["object-basics", "object-destructuring"],
     learnGuideSlug: "objects",
-    seoDescription:
-      "Learn and interact with Optional Chaining & Nullish Coalescing in JavaScript. See the code, understand the explanation, and run it live in JS CodeLab.",
     datePublished: "2026-10-09T00:00:00Z",
-    dateModified: "2026-10-09T06:50:12.570Z",
+    dateModified: "2026-10-12T00:00:00Z",
     code: `const user = {
   profile: {
     name: "Suresh"
@@ -35,7 +49,7 @@ export const modernExamples: CodeExample[] = [
 };
 
 console.log(user.profile?.name);
-// @ts-ignore (ignoring for JS example)
+// @ts-ignore
 console.log(user.settings?.theme ?? "default");`,
   },
 ];

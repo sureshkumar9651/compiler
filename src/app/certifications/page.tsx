@@ -4,8 +4,9 @@ import { Footer } from '@/components/layout/Footer';
 import { CertificationsClient } from '@/features/certifications/components/CertificationsClient';
 
 export const metadata: Metadata = {
-  title: 'Professional Technology Certifications | JS CodeLab',
-  description: 'Validate real-world software engineering mastery across programming languages, frontend, backend, databases, DevOps, testing, and system architecture. Interactive assessments with downloadable PDF credentials.',
+  title: 'Professional Technology Certifications',
+  description:
+    'Validate real-world software engineering mastery across 50 technical tracks. Complete interactive assessments and download verified PDF certificates.',
   alternates: {
     canonical: '/certifications',
   },
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
     description: 'Validate real-world engineering mastery across 7 technology domains with verifiable PDF credentials.',
   },
 };
+
+import { JsonLd } from '@/components/seo/JsonLd';
 
 export default function CertificationsPage() {
   const structuredData = {
@@ -46,10 +49,7 @@ export default function CertificationsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd data={structuredData} />
       <Header />
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

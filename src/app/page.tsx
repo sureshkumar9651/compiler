@@ -1,9 +1,27 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Zap, Code2, BookOpen, Award } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { learnTopics } from '@/features/learn/data';
 import { exampleService } from '@/features/examples/services/example-service';
+import { JsonLd } from '@/components/seo/JsonLd';
+
+export const metadata: Metadata = {
+  title: 'Free Online JavaScript Compiler & Playground | JS CodeLab',
+  description: 'Write, run, test, and debug JavaScript online with JS CodeLab — a fast, free browser-based JavaScript compiler, interactive playground, and code sandbox.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Free Online JavaScript Compiler & Playground | JS CodeLab',
+    description: 'Write, run, test, and debug JavaScript online with JS CodeLab — a fast, free browser-based JavaScript compiler, interactive playground, and code sandbox.',
+    url: '/',
+    siteName: 'JS CodeLab',
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 export default function LandingPage() {
   const popularExamples = exampleService.getAllExamples().slice(0, 6);
@@ -16,6 +34,21 @@ export default function LandingPage() {
   ];
 
   const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "JS CodeLab",
+      "url": "https://jscodelab-js.vercel.app",
+      "description": "Free online JavaScript compiler, interactive playground, runnable code examples, tutorials, and certifications."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "JS CodeLab",
+      "url": "https://jscodelab-js.vercel.app",
+      "logo": "https://jscodelab-js.vercel.app/icon.png",
+      "sameAs": ["https://github.com/sureshkumar9651/compiler"]
+    },
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -33,6 +66,38 @@ export default function LandingPage() {
     },
     {
       "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How do I run JavaScript online?",
+      "description": "Step-by-step instructions for writing, testing, and running JavaScript code online in JS CodeLab.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Open the Playground",
+          "text": "Open the JS CodeLab online playground in your browser."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Type Your JavaScript Code",
+          "text": "Type or paste your JavaScript code into the Monaco editor pane."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Run the Code",
+          "text": "Click the Run button or press Ctrl + Enter to evaluate your script safely inside a Web Worker."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "View Output in Console",
+          "text": "View your output immediately in the integrated JavaScript console online."
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": faqItems.map(item => ({
         "@type": "Question",
@@ -47,10 +112,7 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd data={structuredData} />
       <Header />
 
       <main className="flex-1 flex flex-col items-center px-4 py-16 md:py-24 bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-neutral-900">
