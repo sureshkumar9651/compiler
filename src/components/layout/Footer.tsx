@@ -8,6 +8,7 @@ export function Footer() {
           <a href="/playground" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Playground</a>
           <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Examples</Link>
           <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Learn</Link>
+          <Link href="/certifications" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Get Certified</Link>
           <Link href="/about" className="hover:text-neutral-900 dark:hover:text-white transition-colors">About</Link>
           <Link href="/privacy" className="hover:text-neutral-900 dark:hover:text-white transition-colors">Privacy</Link>
           <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-white transition-colors">GitHub</a>

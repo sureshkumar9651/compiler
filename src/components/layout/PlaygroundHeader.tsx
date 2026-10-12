@@ -69,6 +69,10 @@ export function PlaygroundHeader() {
           Examples
         </Link>
         <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-800 hidden lg:block" />
+        <Link href="/certifications" className="hidden xl:block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+          Certifications
+        </Link>
+        <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-800 hidden xl:block" />
         
         {/* Project Name Editor */}
         <div className="flex items-center gap-2 relative group min-w-[100px] sm:min-w-[120px] shrink-0">

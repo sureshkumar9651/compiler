@@ -31,6 +31,7 @@ export function Header() {
         <a href="/playground" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Playground</a>
         <Link href="/examples" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Examples</Link>
         <Link href="/learn" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">Learn</Link>
+        <Link href="/certifications" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors">Get Certified</Link>
         <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
       </nav>
 
@@ -68,6 +69,13 @@ export function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Learn
+            </Link>
+            <Link 
+              href="/certifications" 
+              className="px-4 py-3 bg-blue-50/50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold rounded-xl transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Get Certified
             </Link>
             <a 
               href="https://github.com/sureshkumar9651/compiler" 

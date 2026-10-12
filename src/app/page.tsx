@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Zap, Code2, BookOpen } from 'lucide-react';
+import { ArrowRight, Zap, Code2, BookOpen, Award } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { learnTopics } from '@/features/learn/data';
@@ -70,6 +70,13 @@ export default function LandingPage() {
               Open JavaScript Compiler
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </a>
+            <Link 
+              href="/certifications" 
+              className="group flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/20"
+            >
+              <Award className="h-5 w-5" />
+              Get Certified
+            </Link>
             <Link 
               href="/examples" 
               className="group flex items-center gap-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white px-8 py-4 rounded-full font-semibold text-lg transition-all"

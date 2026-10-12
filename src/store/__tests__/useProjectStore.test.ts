@@ -90,10 +90,9 @@ describe('useProjectStore - Mode Isolation & Filtering', () => {
   });
 
   it('handles project deletion and falls back to mode-matching project', async () => {
-    await useProjectStore.getState().initialize();
     const js1 = await useProjectStore.getState().createProject('JS 1', undefined, 'javascript');
     
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 15));
     const js2 = await useProjectStore.getState().createProject('JS 2', undefined, 'javascript');
 
     expect(useProjectStore.getState().activeProjectId).toBe(js2.id);

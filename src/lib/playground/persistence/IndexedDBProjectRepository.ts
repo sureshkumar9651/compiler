@@ -8,10 +8,20 @@ interface JSCodeLabDB extends DBSchema {
     value: Project;
     indexes: { 'updatedAt': number };
   };
+  certificates: {
+    key: string;
+    value: any;
+    indexes: { 'issuedAt': number; 'certificationId': string };
+  };
+  assessment_attempts: {
+    key: string;
+    value: any;
+    indexes: { 'timestamp': number; 'certificationId': string };
+  };
 }
 
 const DB_NAME = 'js-codelab';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export function migrateProject(project: Project): Project {
   if (!project.files || project.files.length === 0) {
@@ -59,6 +69,16 @@ export class IndexedDBProjectRepository implements ProjectRepository {
             if (!db.objectStoreNames.contains('projects')) {
               const store = db.createObjectStore('projects', { keyPath: 'id' });
               store.createIndex('updatedAt', 'updatedAt');
+            }
+            if (!db.objectStoreNames.contains('certificates')) {
+              const certStore = db.createObjectStore('certificates', { keyPath: 'id' });
+              certStore.createIndex('issuedAt', 'issuedAt');
+              certStore.createIndex('certificationId', 'certificationId');
+            }
+            if (!db.objectStoreNames.contains('assessment_attempts')) {
+              const attemptStore = db.createObjectStore('assessment_attempts', { keyPath: 'id' });
+              attemptStore.createIndex('timestamp', 'timestamp');
+              attemptStore.createIndex('certificationId', 'certificationId');
             }
           },
         })
