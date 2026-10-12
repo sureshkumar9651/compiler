@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Certification, Question, AssessmentAttempt, Certificate } from '../types';
+import { Certification, Question, ShuffledQuestion, AssessmentAttempt, Certificate } from '../types';
 import { calculateScore, generateCertificateId, generateVerificationHash } from '../services/scoringService';
 import { certificateRepository } from '../persistence/IndexedDBCertificateRepository';
 import { Clock, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Bookmark, Lock, ShieldAlert, LogOut } from 'lucide-react';
@@ -9,10 +9,9 @@ import { useAssessmentRestrictions, createTabSwitchMonitor, TabSwitchMonitor } f
 import { AssessmentWarningModal } from './AssessmentWarningModal';
 import { validateAndSanitizeLearnerName } from '../services/nameValidation';
 
-
 interface AssessmentRunnerProps {
   certification: Certification;
-  questions: Question[];
+  questions: (Question | ShuffledQuestion)[];
   learnerName: string;
   onCancel: () => void;
   onFinish: (attempt: AssessmentAttempt, certificate: Certificate | null) => void;
@@ -32,7 +31,7 @@ export function AssessmentRunner({
 
   // Assessment flow state
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [flagged, setFlagged] = useState<Record<string, boolean>>({});
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(certification.durationMinutes * 60);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -213,11 +212,11 @@ export function AssessmentRunner({
   const seconds = timeLeftSeconds % 60;
   const isTimeLow = timeLeftSeconds <= 180; // 3 minutes or less
 
-  const handleSelectOption = (optionIndex: number) => {
+  const handleSelectOption = (optionId: string) => {
     if (isTerminated || isSubmitting) return;
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion.id]: optionIndex,
+      [currentQuestion.id]: optionId,
     }));
   };
 
@@ -285,27 +284,30 @@ export function AssessmentRunner({
       terminated: false,
     };
 
-
     await certificateRepository.saveAttempt(attempt);
     onFinish(attempt, newCertificate);
   };
 
   // Keyboard navigation for options list
-  const handleOptionKeyDown = (e: React.KeyboardEvent, optIdx: number) => {
+  const handleOptionKeyDown = (e: React.KeyboardEvent, optIdx: number, optionId: string) => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
-      handleSelectOption(optIdx);
+      handleSelectOption(optionId);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       const nextOpt = (optIdx + 1) % currentQuestion.options.length;
-      handleSelectOption(nextOpt);
+      const nextOptObj = currentQuestion.options[nextOpt];
+      const nextId = typeof nextOptObj === 'string' ? String(nextOpt) : nextOptObj.id;
+      handleSelectOption(nextId);
       const nextEl = document.getElementById(`option-${nextOpt}`);
       nextEl?.focus();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       const prevOpt =
         (optIdx - 1 + currentQuestion.options.length) % currentQuestion.options.length;
-      handleSelectOption(prevOpt);
+      const prevOptObj = currentQuestion.options[prevOpt];
+      const prevId = typeof prevOptObj === 'string' ? String(prevOpt) : prevOptObj.id;
+      handleSelectOption(prevId);
       const prevEl = document.getElementById(`option-${prevOpt}`);
       prevEl?.focus();
     }
@@ -376,9 +378,21 @@ export function AssessmentRunner({
             <span>
               Question {currentIndex + 1} of {questions.length}
             </span>
-            <span>
-              {answeredCount} answered ({progressPercent}%)
-            </span>
+            <div className="flex items-center gap-3">
+              <span>
+                {answeredCount} answered ({progressPercent}%)
+              </span>
+              <span className="text-neutral-400 dark:text-neutral-600">·</span>
+              <span
+                className={
+                  questions.length - answeredCount > 0
+                    ? 'text-amber-600 dark:text-amber-400 font-medium'
+                    : 'text-emerald-600 dark:text-emerald-400 font-medium'
+                }
+              >
+                {questions.length - answeredCount} unanswered
+              </span>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -429,9 +443,14 @@ export function AssessmentRunner({
           {...restrictionProps}
         >
           <div className="flex items-center justify-between gap-4">
-            <span className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-              {currentQuestion.topic}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                {currentQuestion.topic}
+              </span>
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60">
+                {currentQuestion.difficulty}
+              </span>
+            </div>
 
             <button
               type="button"
@@ -462,33 +481,36 @@ export function AssessmentRunner({
           {/* Multiple Choice Options */}
           <div className="space-y-3 pt-2" role="radiogroup" aria-label="Question options">
             {currentQuestion.options.map((option, optIdx) => {
-              const isSelected = answers[currentQuestion.id] === optIdx;
+              const optionId = typeof option === 'string' ? String(optIdx) : option.id;
+              const optionText = typeof option === 'string' ? option : option.text;
+              const isSelected = answers[currentQuestion.id] === optionId;
+              const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
 
               return (
                 <div
                   id={`option-${optIdx}`}
-                  key={optIdx}
-                  onClick={() => handleSelectOption(optIdx)}
+                  key={optionId}
+                  onClick={() => handleSelectOption(optionId)}
                   role="radio"
                   aria-checked={isSelected}
                   tabIndex={isSelected ? 0 : 0}
-                  onKeyDown={(e) => handleOptionKeyDown(e, optIdx)}
-                  className={`group flex items-start gap-3 p-4 rounded-xl border text-sm cursor-pointer transition-all ${
+                  onKeyDown={(e) => handleOptionKeyDown(e, optIdx, optionId)}
+                  className={`group flex items-start gap-3.5 p-4 rounded-xl border text-sm cursor-pointer transition-all ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50/60 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 font-medium'
+                      ? 'border-blue-500 bg-blue-50/60 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 font-medium ring-1 ring-blue-500/40'
                       : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900 hover:border-neutral-300 dark:hover:border-neutral-700 text-neutral-700 dark:text-neutral-300'
                   }`}
                 >
                   <div
-                    className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                    className={`w-6 h-6 rounded-lg border text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                       isSelected
                         ? 'border-blue-600 bg-blue-600 text-white'
-                        : 'border-neutral-400 dark:border-neutral-600 bg-transparent'
+                        : 'border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 group-hover:border-blue-400'
                     }`}
                   >
-                    {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                    {letter}
                   </div>
-                  <span className="flex-1 select-none leading-relaxed">{option}</span>
+                  <span className="flex-1 select-none leading-relaxed text-sm">{optionText}</span>
                 </div>
               );
             })}

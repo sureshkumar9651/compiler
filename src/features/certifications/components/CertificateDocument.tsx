@@ -213,9 +213,9 @@ export function CertificateDocument({ certificate, className = '' }: Certificate
           {/* Center: Golden Seal Medallion */}
           <div className="flex flex-col items-center justify-center order-1 md:order-2">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-              {/* Ribbon Tails */}
-              <div className="absolute -bottom-2 -left-1 w-4 h-8 bg-gradient-to-b from-amber-600 to-amber-900 rotate-12 shadow-sm rounded-b-xs" />
-              <div className="absolute -bottom-2 -right-1 w-4 h-8 bg-gradient-to-b from-amber-600 to-amber-900 -rotate-12 shadow-sm rounded-b-xs" />
+              {/* Ribbon Tails (neatly tucked, preventing bottom overlap) */}
+              <div className="absolute -bottom-1 -left-0.5 w-3 sm:w-3.5 h-4 sm:h-5 bg-gradient-to-b from-amber-600 to-amber-900 rotate-12 shadow-xs rounded-b-xs" />
+              <div className="absolute -bottom-1 -right-0.5 w-3 sm:w-3.5 h-4 sm:h-5 bg-gradient-to-b from-amber-600 to-amber-900 -rotate-12 shadow-xs rounded-b-xs" />
 
               {/* Outer Dashed Gold Ring */}
               <div className="absolute inset-0 rounded-full border-2 border-dashed border-amber-400/80" />

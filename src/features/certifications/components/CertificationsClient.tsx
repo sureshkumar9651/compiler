@@ -10,11 +10,10 @@ import { AssessmentRunner } from './AssessmentRunner';
 import { AssessmentResult } from './AssessmentResult';
 import { CertificateView } from './CertificateView';
 import { CertificateVerification } from './CertificateVerification';
-import { MyCertificatesList } from './MyCertificatesList';
-import { Award, ShieldCheck, FileCheck, Info } from 'lucide-react';
+import { Award, ShieldCheck, Info } from 'lucide-react';
 
 export function CertificationsClient() {
-  const [activeTab, setActiveTab] = useState<'certifications' | 'my-certificates' | 'verify'>('certifications');
+  const [activeTab, setActiveTab] = useState<'certifications' | 'verify'>('certifications');
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -74,11 +73,6 @@ export function CertificationsClient() {
         certification: currentCert,
       });
     }
-  };
-
-  const handleDeleteCertificate = async (id: string) => {
-    await certificateRepository.deleteCertificate(id);
-    await loadCertificates();
   };
 
   // Full Screen / Modal Flows
@@ -176,17 +170,6 @@ export function CertificationsClient() {
             <span>Available Certifications</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab('my-certificates')}
-            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors ${
-              activeTab === 'my-certificates'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200'
-            }`}
-          >
-            <FileCheck className="h-4 w-4" />
-            <span>My Certificates ({certificates.length})</span>
-          </button>
 
           <button
             onClick={() => setActiveTab('verify')}
@@ -235,16 +218,6 @@ export function CertificationsClient() {
         </div>
       )}
 
-      {activeTab === 'my-certificates' && (
-        <div className="animate-in fade-in duration-200">
-          <MyCertificatesList
-            certificates={certificates}
-            onViewCertificate={(c) => setViewingCertificate(c)}
-            onDeleteCertificate={handleDeleteCertificate}
-            onExploreCertifications={() => setActiveTab('certifications')}
-          />
-        </div>
-      )}
 
       {activeTab === 'verify' && (
         <div className="animate-in fade-in duration-200">

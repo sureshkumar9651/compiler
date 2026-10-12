@@ -217,24 +217,24 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
     opacity: 0.045,
   });
 
-  // Watermark Security Seals text
+  // Watermark Security Seals text (placed along outer circle perimeter so center name field is crystal clear)
   const wmTopText = 'JS CODELAB ACADEMY';
-  const wmTopWidth = helveticaBold.widthOfTextAtSize(wmTopText, 9);
+  const wmTopWidth = helveticaBold.widthOfTextAtSize(wmTopText, 8.5);
   page.drawText(wmTopText, {
     x: wmCenterX - wmTopWidth / 2,
-    y: wmCenterY + 52,
-    size: 9,
+    y: wmCenterY + 148,
+    size: 8.5,
     font: helveticaBold,
     color: cyanAccent,
     opacity: 0.045,
   });
 
   const wmBottomText = 'OFFICIAL CREDENTIAL · VERIFIED';
-  const wmBottomWidth = helveticaBold.widthOfTextAtSize(wmBottomText, 8);
+  const wmBottomWidth = helveticaBold.widthOfTextAtSize(wmBottomText, 7.5);
   page.drawText(wmBottomText, {
     x: wmCenterX - wmBottomWidth / 2,
-    y: wmCenterY - 60,
-    size: 8,
+    y: wmCenterY - 148,
+    size: 7.5,
     font: helveticaBold,
     color: cyanAccent,
     opacity: 0.045,
@@ -354,13 +354,13 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
     nameWidth = timesBold.widthOfTextAtSize(displayName, nameFontSize);
   }
 
-  const nameY = pageHeight - 232;
+  const nameY = pageHeight - 228;
   drawCenteredText(displayName, timesBold, nameFontSize, nameY, white);
 
   // Ornate Nameplate Underline with center diamond stud
-  // Increased vertical separation (24pt below baseline) so descenders ('g', 'j', 'y', 'p', 'q') have clean breathing room
+  // Generous vertical separation (28pt below baseline) ensures descenders ('g', 'j', 'y', 'p', 'q') have ample breathing room
   const underlineHalfSpan = Math.min(230, Math.max(130, nameWidth / 2 + 35));
-  const underlineY = nameY - 24;
+  const underlineY = nameY - 28;
   const diamondHalf = 3.5;
 
   // Left segment
@@ -423,7 +423,7 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
   });
 
   // ================= 8. FOOTER SECTION =================
-  const footerDividerY = 114;
+  const footerDividerY = 126;
   page.drawLine({
     start: { x: innerMargin + 15, y: footerDividerY },
     end: { x: pageWidth - innerMargin - 15, y: footerDividerY },
@@ -437,11 +437,11 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
     day: 'numeric',
   });
 
-  // Left Column: Issue Date, Certificate ID, Checksum
+  // Left Column: Issue Date, Certificate ID, Checksum (Centered with Seal)
   const leftColX = innerMargin + 20;
   page.drawText(`Issue Date: ${issueDateFormatted}`, {
     x: leftColX,
-    y: 88,
+    y: 94,
     size: 9,
     font: helvetica,
     color: slateLight,
@@ -449,7 +449,7 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
 
   page.drawText(`Certificate ID: ${certificate.id}`, {
     x: leftColX,
-    y: 73,
+    y: 79,
     size: 9,
     font: helveticaBold,
     color: white,
@@ -457,42 +457,46 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
 
   page.drawText(`Integrity Checksum: ${certificate.verificationHash.substring(0, 22)}...`, {
     x: leftColX,
-    y: 58,
+    y: 64,
     size: 7.5,
     font: courier,
     color: slateDark,
   });
 
-  // Center Bottom: Prestigious Golden Seal Medallion with Ribbon Tails
+  // Center Bottom: Prestigious Golden Seal Medallion (Identical to Web UI preview)
   const sealX = pageWidth / 2;
-  const sealY = 66;
-  const sealRadius = 24;
+  const sealY = 82;
+  const sealRadius = 22;
 
-  // Ribbon tails hanging below the seal
+  // 1. Ribbon tails (angled amber/gold banners hanging below the medallion)
   page.drawLine({
-    start: { x: sealX - 8, y: sealY - 14 },
-    end: { x: sealX - 16, y: sealY - 34 },
-    thickness: 4.5,
+    start: { x: sealX - 9, y: sealY - 12 },
+    end: { x: sealX - 15, y: sealY - 25 },
+    thickness: 6.5,
     color: rgb(180 / 255, 83 / 255, 9 / 255),
   });
   page.drawLine({
-    start: { x: sealX + 8, y: sealY - 14 },
-    end: { x: sealX + 16, y: sealY - 34 },
-    thickness: 4.5,
+    start: { x: sealX + 9, y: sealY - 12 },
+    end: { x: sealX + 15, y: sealY - 25 },
+    thickness: 6.5,
     color: rgb(180 / 255, 83 / 255, 9 / 255),
   });
 
-  // Outer gold dashed ring
-  page.drawCircle({
-    x: sealX,
-    y: sealY,
-    size: sealRadius + 4,
-    borderColor: goldAccent,
-    borderWidth: 0.75,
-    borderOpacity: 0.8,
-  });
+  // 2. Outer gold dashed ring (24 radial dashes)
+  for (let i = 0; i < 24; i++) {
+    const rad = (i * 15 * Math.PI) / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    page.drawLine({
+      start: { x: sealX + cos * 23.5, y: sealY + sin * 23.5 },
+      end: { x: sealX + cos * 26, y: sealY + sin * 26 },
+      thickness: 1.25,
+      color: goldAccent,
+      opacity: 0.85,
+    });
+  }
 
-  // Middle gold metallic ring
+  // 3. Middle gold metallic ring
   page.drawCircle({
     x: sealX,
     y: sealY,
@@ -502,55 +506,66 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
     borderWidth: 1.5,
   });
 
-  // Inner deep navy disc
+  // 4. Inner deep navy disc
   page.drawCircle({
     x: sealX,
     y: sealY,
     size: sealRadius - 3.5,
-    color: rgb(7 / 255, 14 / 255, 34 / 255),
-
+    color: rgb(6 / 255, 12 / 255, 32 / 255),
     borderColor: goldAccent,
     borderWidth: 1,
   });
 
-  // Innermost accent ring
+  // 5. Innermost fine accent ring
   page.drawCircle({
     x: sealX,
     y: sealY,
-    size: sealRadius - 7,
+    size: sealRadius - 6.5,
     borderColor: cyanAccent,
     borderWidth: 0.5,
   });
 
-  // Text inside seal
+  // 6. Text inside seal: OFFICIAL / JS / VERIFIED
   const sealTopText = 'OFFICIAL';
-  const sealTopWidth = helveticaBold.widthOfTextAtSize(sealTopText, 5);
+  const sealTopWidth = helveticaBold.widthOfTextAtSize(sealTopText, 4.5);
   page.drawText(sealTopText, {
     x: sealX - sealTopWidth / 2,
-    y: sealY + 8,
-    size: 5,
+    y: sealY + 7.5,
+    size: 4.5,
     font: helveticaBold,
     color: goldBright,
   });
 
   const sealCenterText = 'JS';
-  const sealCenterWidth = helveticaBold.widthOfTextAtSize(sealCenterText, 12);
+  const sealCenterWidth = timesBold.widthOfTextAtSize(sealCenterText, 12);
   page.drawText(sealCenterText, {
     x: sealX - sealCenterWidth / 2,
     y: sealY - 4,
     size: 12,
-    font: helveticaBold,
+    font: timesBold,
     color: white,
   });
 
   const sealBottomText = 'VERIFIED';
-  const sealBottomWidth = helveticaBold.widthOfTextAtSize(sealBottomText, 4.5);
+  const sealBottomWidth = helveticaBold.widthOfTextAtSize(sealBottomText, 4);
   page.drawText(sealBottomText, {
     x: sealX - sealBottomWidth / 2,
-    y: sealY - 11,
-    size: 4.5,
+    y: sealY - 10.5,
+    size: 4,
     font: helveticaBold,
     color: goldBright,
+  });
+
+  // 7. "CREDENTIAL SEAL" caption below the medallion (matches web preview)
+  const sealCaptionText = 'CREDENTIAL SEAL';
+  const sealCaptionWidth = helveticaBold.widthOfTextAtSize(sealCaptionText, 6.5);
+  page.drawText(sealCaptionText, {
+    x: sealX - sealCaptionWidth / 2,
+    y: sealY - 32,
+    size: 6.5,
+    font: helveticaBold,
+    color: goldBright,
+    opacity: 0.85,
   });
 
   // Right Column: Authority and Verification Link (Guaranteed Zero Overflow)
@@ -568,8 +583,8 @@ export async function generateCertificatePdf(certificate: Certificate): Promise<
     page.drawText(text, { x, y, size, font, color });
   };
 
-  drawAnchorRightText('JS CodeLab Academy', helveticaBold, 11.5, 76, cyanAccent);
-  drawAnchorRightText('Credential Verification Authority', helvetica, 9, 61, slateMuted);
+  drawAnchorRightText('JS CodeLab Academy', helveticaBold, 11.5, 84, cyanAccent);
+  drawAnchorRightText('Credential Verification Authority', helvetica, 9, 69, slateMuted);
 
   return await pdfDoc.save();
 

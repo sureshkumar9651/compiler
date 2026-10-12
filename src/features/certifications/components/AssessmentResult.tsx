@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AssessmentAttempt, Certificate, Question, Certification } from '../types';
+import { AssessmentAttempt, Certificate, Question, ShuffledQuestion, Certification } from '../types';
 import {
   Award,
   CheckCircle2,
@@ -16,18 +16,18 @@ import {
   ExternalLink,
   AlertCircle,
   ShieldCheck,
+  Calendar,
+  Hash,
 } from 'lucide-react';
 import Link from 'next/link';
-import { CertificateDocument } from './CertificateDocument';
 import { downloadCertificatePdf } from '../services/pdfCertificateService';
 
 interface AssessmentResultProps {
   attempt: AssessmentAttempt;
   certificate: Certificate | null;
   certification: Certification;
-  questions: Question[];
+  questions: (Question | ShuffledQuestion)[];
   onRetake: () => void;
-  onViewCertificate: (cert: Certificate) => void;
   onBackToOverview: () => void;
 }
 
@@ -37,7 +37,6 @@ export function AssessmentResult({
   certification,
   questions,
   onRetake,
-  onViewCertificate,
   onBackToOverview,
 }: AssessmentResultProps) {
   const [showReview, setShowReview] = useState(false);
@@ -190,7 +189,7 @@ export function AssessmentResult({
       {/* Official Certificate Section (Rendered Only for Valid Passed Attempts) */}
       {passed && certificate && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-300">
-          {/* Certificate Actions Bar (Strictly outside PDF content) */}
+          {/* Certificate Actions Bar */}
           <div className="flex items-center justify-between gap-4 flex-wrap bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 sm:p-5 shadow-xs">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -249,9 +248,54 @@ export function AssessmentResult({
             </div>
           )}
 
-          {/* Centered, Scalable, Responsive Certificate Document Preview */}
-          <div className="w-full overflow-x-auto py-2">
-            <CertificateDocument certificate={certificate} />
+          {/* Official Issued Credential Summary Card (No HTML document preview) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-neutral-900 border border-neutral-800 text-left space-y-6 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex items-start justify-between gap-4 flex-wrap relative z-10">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-emerald-400" />
+                  <span className="text-xs font-semibold tracking-wider uppercase text-emerald-400">
+                    JS CodeLab Verified Credential
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">
+                  {certificate.certificationTitle}
+                </h3>
+              </div>
+
+              <div className="text-right">
+                <span className="text-xs text-neutral-400">Issued On</span>
+                <p className="text-sm font-semibold text-neutral-200">
+                  {new Date(certificate.issuedAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-neutral-800 text-xs text-neutral-300 relative z-10">
+              <div>
+                <span className="text-neutral-500 block mb-0.5">Recipient</span>
+                <span className="font-semibold text-white text-sm">{certificate.learnerName}</span>
+              </div>
+              <div>
+                <span className="text-neutral-500 block mb-0.5">Score Achieved</span>
+                <span className="font-semibold text-emerald-400 text-sm">{certificate.score}%</span>
+              </div>
+              <div>
+                <span className="text-neutral-500 block mb-0.5">Certificate ID</span>
+                <span className="font-mono text-neutral-200 text-sm">{certificate.id}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 text-[11px] text-neutral-400 border-t border-neutral-800/60 flex items-center justify-between gap-4 flex-wrap relative z-10">
+              <span>Official credential provided directly as a cryptographically verifiable PDF document.</span>
+              <span className="font-mono text-[10px] text-neutral-500">Hash: {certificate.verificationHash.slice(0, 16)}...</span>
+            </div>
           </div>
 
           {/* Bottom Navigation for Passed Assessment */}
@@ -291,8 +335,11 @@ export function AssessmentResult({
 
           <div className="space-y-4">
             {questions.map((q, idx) => {
-              const selectedIdx = attempt.answers[q.id];
-              const isCorrect = selectedIdx === q.correctAnswerIndex;
+              const selectedOptionId = attempt.answers[q.id];
+              const isCorrect =
+                selectedOptionId === q.correctOptionId ||
+                (typeof selectedOptionId === 'number' &&
+                  (q as unknown as { correctAnswerIndex?: number }).correctAnswerIndex === selectedOptionId);
 
               return (
                 <div
@@ -304,9 +351,14 @@ export function AssessmentResult({
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-                      Question {idx + 1} · {q.topic}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                        Question {idx + 1} · {q.topic}
+                      </span>
+                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60">
+                        {q.difficulty}
+                      </span>
+                    </div>
                     <span
                       className={`text-xs font-bold px-2 py-0.5 rounded-md ${
                         isCorrect
@@ -330,29 +382,43 @@ export function AssessmentResult({
 
                   <div className="space-y-2 pt-1 text-xs">
                     {q.options.map((option, optIdx) => {
-                      const isOptionSelected = selectedIdx === optIdx;
-                      const isOptionCorrect = q.correctAnswerIndex === optIdx;
+                      const optId = typeof option === 'string' ? String(optIdx) : option.id;
+                      const optText = typeof option === 'string' ? option : option.text;
+                      const isOptionSelected =
+                        selectedOptionId === optId ||
+                        (typeof selectedOptionId === 'number' && selectedOptionId === optIdx);
+                      const isOptionCorrect =
+                        q.correctOptionId === optId ||
+                        (typeof q.correctOptionId === 'undefined' &&
+                          (q as unknown as { correctAnswerIndex?: number }).correctAnswerIndex === optIdx);
+                      const letter = String.fromCharCode(65 + optIdx);
 
-                      let badgeClass = 'border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300';
+                      let badgeClass =
+                        'border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300';
                       if (isOptionCorrect) {
-                        badgeClass = 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-200 font-semibold';
+                        badgeClass =
+                          'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-200 font-semibold';
                       } else if (isOptionSelected && !isOptionCorrect) {
-                        badgeClass = 'border-red-500 bg-red-50/70 dark:bg-red-950/50 text-red-800 dark:text-red-200 line-through';
+                        badgeClass =
+                          'border-red-500 bg-red-50/70 dark:bg-red-950/50 text-red-800 dark:text-red-200 line-through';
                       }
 
                       return (
                         <div
-                          key={optIdx}
+                          key={optId}
                           className={`p-2.5 rounded-lg border flex items-center justify-between gap-3 ${badgeClass}`}
                         >
-                          <span>{option}</span>
+                          <div className="flex items-center gap-2.5">
+                            <span className="font-bold text-neutral-500 text-[11px]">{letter}.</span>
+                            <span>{optText}</span>
+                          </div>
                           {isOptionCorrect && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 shrink-0">
                               Correct Answer
                             </span>
                           )}
                           {isOptionSelected && !isOptionCorrect && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 shrink-0">
                               Your Answer
                             </span>
                           )}
@@ -361,9 +427,22 @@ export function AssessmentResult({
                     })}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-800 text-xs text-neutral-600 dark:text-neutral-400 space-y-1">
+                  <div className="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-800 text-xs text-neutral-600 dark:text-neutral-400 space-y-1.5">
                     <p className="font-semibold text-neutral-700 dark:text-neutral-300">Explanation:</p>
                     <p className="leading-relaxed">{q.explanation}</p>
+                    {q.referenceUrl && (
+                      <p className="pt-1">
+                        <a
+                          href={q.referenceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline text-[11px]"
+                        >
+                          <span>Documentation reference</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </p>
+                    )}
                   </div>
                 </div>
               );
