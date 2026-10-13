@@ -9,7 +9,7 @@ import { validateAndSanitizeLearnerName } from '../services/nameValidation';
 interface LearnerNameModalProps {
   certification: Certification;
   onClose: () => void;
-  onConfirm: (learnerName: string) => void;
+  onConfirm: (learnerName: string, email: string) => void;
 }
 
 export function LearnerNameModal({
@@ -18,6 +18,7 @@ export function LearnerNameModal({
   onConfirm,
 }: LearnerNameModalProps) {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [acknowledged, setAcknowledged] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +26,8 @@ export function LearnerNameModal({
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const nameValidation = validateAndSanitizeLearnerName(name);
-  const isReadyToStart = nameValidation.valid && acknowledged;
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const isReadyToStart = nameValidation.valid && emailValid && acknowledged;
 
 
   // Accessible focus trap and Escape key listener
@@ -73,12 +75,16 @@ export function LearnerNameModal({
       setError(nameValidation.error || 'Please enter your actual full name.');
       return;
     }
+    if (!emailValid) {
+      setError('Please enter a valid email address.');
+      return;
+    }
     if (!acknowledged) {
       setError('You must acknowledge the anti-cheating and test rules to start.');
       return;
     }
     setError(null);
-    onConfirm(nameValidation.sanitized);
+    onConfirm(nameValidation.sanitized, email.trim());
   };
 
 
@@ -124,27 +130,50 @@ export function LearnerNameModal({
 
         {/* Content Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="space-y-2">
-            <label
-              htmlFor="learner-name-input"
-              className="block text-sm font-semibold text-neutral-900 dark:text-neutral-100"
-            >
-              Your Full Name
-            </label>
-            <input
-              id="learner-name-input"
-              ref={nameInputRef}
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (error) setError(null);
-              }}
-              placeholder="e.g. Alex Morgan"
-              className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 text-neutral-900 dark:text-neutral-100 transition-shadow"
-            />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="learner-name-input"
+                className="block text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+              >
+                Your Full Name
+              </label>
+              <input
+                id="learner-name-input"
+                ref={nameInputRef}
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (error) setError(null);
+                }}
+                placeholder="e.g. Alex Morgan"
+                className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 text-neutral-900 dark:text-neutral-100 transition-shadow"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="learner-email-input"
+                className="block text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+              >
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="learner-email-input"
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError(null);
+                }}
+                placeholder="e.g. alex@example.com"
+                className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 text-neutral-900 dark:text-neutral-100 transition-shadow"
+              />
+            </div>
+
             {error && (
-              <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1.5 mt-1">
+              <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1.5">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 <span>{error}</span>
               </p>

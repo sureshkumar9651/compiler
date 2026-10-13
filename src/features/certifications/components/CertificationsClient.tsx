@@ -105,7 +105,7 @@ export function CertificationsClient() {
     }
   };
 
-  const handleConfirmLearnerName = (name: string) => {
+  const handleConfirmLearnerName = (name: string, _email: string) => {
     if (!modalCert) return;
     const cert = modalCert;
     setModalCert(null);
