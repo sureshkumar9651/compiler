@@ -29,6 +29,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+   other: {
+    "google-adsense-account": "ca-pub-2610652513602538",
+  },
   title: {
     default: "Free Online JavaScript Compiler & Playground | JS CodeLab",
     template: "%s | JS CodeLab",
