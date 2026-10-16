@@ -55,6 +55,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.4,
     },
+    {
+      url: `${SITE_URL}/api-playground`,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/jsonplaceholder`,
+      lastModified: LATEST_UPDATE,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
   ];
 
   // Add Example and Template pages

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { TerminalSquare, Menu, X, Plug } from 'lucide-react';
+import { TerminalSquare, Menu, X, Plug, FlaskConical } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,6 +34,10 @@ export function Header() {
         <Link href="/api-playground" className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">
           <Plug className="h-3.5 w-3.5" />
           API
+        </Link>
+        <Link href="/jsonplaceholder" className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">
+          <FlaskConical className="h-3.5 w-3.5" />
+          JSONPlaceholder
         </Link>
         <Link href="/certifications" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors">Get Certified</Link>
         <a href="https://github.com/sureshkumar9651/compiler" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors">GitHub</a>
@@ -81,6 +85,14 @@ export function Header() {
             >
               <Plug className="h-4 w-4" />
               API Playground
+            </Link>
+            <Link 
+              href="/jsonplaceholder" 
+              className="flex items-center gap-2 px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-900 rounded-xl transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FlaskConical className="h-4 w-4" />
+              JSONPlaceholder API
             </Link>
             <Link 
               href="/certifications" 
